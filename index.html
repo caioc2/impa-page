@@ -15,15 +15,23 @@
 <body>
 
 <header>
-  <h2>Scroll Down</h2>
-  <p>Scroll down to see the sticky effect.</p>
+  <h2>Caio Souza Homepage</h2>
+  <p>Doctorate student in Mathematics - Computer Graphics at IMPA, Brazil</p>
 </header>
 
 <div id="navbar">
 	<div id="dl-menu" class="dl-menuwrapper">
 		<button class="dl-trigger">Open Menu</button>
-		
 		<ul class="dl-menu">
+			<li>
+				<a>Research</a>
+				<ul class="dl-submenu">
+					<li><a customhref="content/rl.html">Reinforcement Learning</a></li>
+				</ul>
+			<li><a customhref="content/disc_proj.html">Discipline Projects</a>
+			<li><a customhref="content/about.html">About me</a>
+		</ul>
+		<!--<ul class="dl-menu">
 			<li>
 				<a>Fashion</a>
 				<ul class="dl-submenu">
@@ -120,18 +128,18 @@
 					</li>
 				</ul>
 			</li>
-		</ul>
+		</ul>-->
 	</div><!-- /dl-menuwrapper -->
 	<a href="index.html">HOME</a>
 </div>
 
 <section id="content-sec" class="wrapper style1">
-	<div id="html-content" class="content" content="content/intro.html"> </div>
+	<div id="html-content" class="content" content="content/home.html"> </div>
 	  
 </section>
 
 
-				<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="js/jquery.dlmenu.js"></script>
 		<script>
 			$(function() {
@@ -172,13 +180,13 @@
 			}
 			
 			$( document ).ready(function() {
-			  $( "#dl-menu a[href]" ).bind( "click", function( event ) {
-				var content = $(this).attr("href");
+			  $( "a[customhref]" ).bind( "click", function( event ) {
+				var content = $(this).attr("customhref");
 				if(content !== "#") {
 					var elem = document.getElementById("html-content");
 					elem.setAttribute("content", content);
 					includeHTML();
-					$(".dl-trigger").click();
+					$(".dl-trigger").trigger("customClose");
 					return false;
 				}
 				

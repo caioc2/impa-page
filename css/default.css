@@ -59,11 +59,11 @@ html {
   padding-left: 14px;
   padding-top: 10px;
   text-decoration: none;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 #navbar a {
-	font-weight: 800;
+	font-weight: 600;
 }
 
 .sticky {
@@ -1862,7 +1862,7 @@ html {
 	}
 
 	a {
-		color: #54a354;
+		color: #90b912;
 	}
 
 	strong, b {

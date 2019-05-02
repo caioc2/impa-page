@@ -11,7 +11,6 @@
 ;( function( $, window, undefined ) {
 
 	'use strict';
-
 	// global
 	var Modernizr = window.Modernizr, $body = $( 'body' );
 
@@ -83,6 +82,15 @@
 				} 
 				else {
 					self._openMenu();
+				}
+				return false;
+
+			} );
+			
+			this.$trigger.on( 'customClose.dlmenu', function() {
+				
+				if( self.open ) {
+					self._closeMenu();
 				}
 				return false;
 
