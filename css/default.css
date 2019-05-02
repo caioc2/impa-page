@@ -1724,6 +1724,10 @@ html {
 		a:hover {
 			text-decoration: none;
 		}
+		
+		a[customhref] {
+			cursor: pointer;
+		}
 
 	strong, b {
 		font-weight: 600;
