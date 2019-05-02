@@ -26,7 +26,14 @@
 			<li>
 				<a href="#">Research</a>
 				<ul class="dl-submenu">
-					<li><a customhref="content/rl.html">Reinforcement Learning</a></li>
+					<li>
+						<a href="#">Reinforcement Learning</a>
+						<ul class="dl-submenu">
+							<li><a customhref="content/rl.html">Introduction</a>
+							<li><a customhref="content/key-ideas.html">Papers and Key Ideas</a>
+							<li><a customhref="content/rubiks-cube.html">Deep RL for 2x2 Rubik's Cube</a>
+						</ul>
+					</li>
 				</ul>
 			<li><a customhref="content/disc_proj.html">Discipline Projects</a>
 			<li><a customhref="content/about.html">About me</a>
@@ -171,8 +178,9 @@
 						if (this.readyState == 4) {
 							if (this.status == 200) {elem.innerHTML = this.responseText;}
 							if (this.status == 404) {elem.innerHTML = "Page not found.";}
+							bindTriggers();
 						}
-						bindTriggers();
+						
 					} 
 					xhttp.open("GET", file, true);
 					xhttp.send();
@@ -181,6 +189,7 @@
 			}
 			
 			function bindTriggers() {
+				$( "a[customhref]" ).off();
 				$( "a[customhref]" ).bind( "click", function( event ) {
 				var content = $(this).attr("customhref");
 				if(content !== "#") {
