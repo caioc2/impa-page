@@ -50,6 +50,7 @@ html {
   //overflow: hidden;
   background: #90b912;
   height: 48px;
+  z-index: 90;
 }
 
 #navbar > a {
@@ -2247,7 +2248,6 @@ html {
 		margin-right: -2rem;
 		opacity: 0;
 		width: 1rem;
-		z-index: -1;
 	}
 
 		input[type="checkbox"] + label,
@@ -2507,6 +2507,7 @@ html {
 	.image {
 		display: inline-block;
 		position: relative;
+		margin: auto;
 	}
 
 		.image.flush {

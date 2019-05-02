@@ -20,6 +20,7 @@
 	perspective: 1000px;
 	-webkit-perspective-origin: 50% 200%;
 	perspective-origin: 50% 200%;
+	z-index: 100;
 }
 
 .dl-menuwrapper:first-child {
