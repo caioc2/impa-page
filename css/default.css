@@ -71,7 +71,7 @@ html {
 .sticky {
   position: fixed;
   top: 0;
-  width: 1400px; /* width pof content div */
+  width: 1200px; /* width pof content div */
 }
 
 .video-container {
@@ -1659,7 +1659,7 @@ html {
 
 	body {
 		background: #FFFFFF;
-		max-width: 1400px;
+		max-width: 1200px;
 		margin: auto;
 	}
 
