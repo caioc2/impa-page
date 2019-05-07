@@ -1,0 +1,57 @@
+<h2>Reinforcement Learning</h2>
+
+<p>Reinforcement Learning is a sub-area of Machine Learning where the goal is to teach an agent how to behave. This is done by simulating the agent actions in its environment and giving rewards when it achieves something important. As much as the agent sounds as a physical entity acting on a environment it is not the essence of it. The essence of the agent is its behavior which is called <i>policy</i>.
+</p>
+
+<p>
+Various real world problem can be posed as a reinforcement learning tasks, for example from making a robot learn to walk where the policy is choosing in which joints and how much force to apply, a reward can be given when the agent go from a initial point to a target point; up to learning how to play chess where the policy chooses the movements and a reward is given when it wins the game. (While they can be represented as a reinforcement learning task, it doesn't mean they are easy to solve).</br>
+The mathematical formulation of such problems is through <i>Markov Decision Processes</i>.
+</p>
+
+
+<h3> Markov Decision Process</h3>
+
+<p>Markov Decision Processes can be modeled by a tuple \( (S,A,T,R) \), where:
+</p>
+<p>
+<ul>
+	<li>\( S \) - State - is the set of possible states of the process. It may be composed of both the environment (external) and agent (internal) state.</li>
+	<li>\( A \) - Action - is the set of possible actions of the process.</li>
+	<li>\( T \) - Transition - is a function \(T: S \times A \times S \rightarrow [0,1] \), which is the probability of the process pass from state \( s\) to state \(s'\) by taking the action \( a \).</li>
+	<li>\( R \) - Reward - is a function \( R: S \times A \rightarrow \mathbb{R} \), giving the reward of the pair state/action \((r,a)\). </li>
+</ul>
+
+Usually  \(T\) and \(R\) are unknown and the methods for learning don't rely on them, but in the observations of its values through the realization of the process. Such methods are called <i>model free</i> because they don't use information of how a specific process works on its internal.
+</p>
+
+<p>
+A policy in this context is a probability distribution \( \pi : S \times A \rightarrow [0,1]\) denoting the probability of taking the action \( a \) at state \( s \), \( P(a|S_t=s)\). When the policy is independent of the \( t \) in which \( s \) occurs it is called <i>stationary</i>. 
+</p>
+
+<p>
+Important concepts for the reinforcement learning framework are:
+<ul style="list-style-type:none">
+	<li><b>Trajectory(\(\tau\)) or Episode</b> - A complete sequence of tuples \((s, a, r)_t\) state, action and reward from a starting point to an end point of agent's life, for example the starting of a chess game till its ending.</li>
+	<li><b>Horizon</b> - The length of state, action and reward sequences visible for the agent in the process. It defines how long in the future an agent account for possible rewards. It can be finite \( k \) time steps or infinite.</li>
+	<li><b>Total Expected Reward</b> - The expectation of rewards from a trajectory \(\tau\), horizon \(k\): \( \mathbb{E}\left[ \sum_{i=0}^{k-1} R_i \right] \), with \(R_i\) the aleatory variable of rewards.</li>
+	<li><b>Discounted Expected Reward</b> - \( \mathbb{E}\left[ \sum_{i=0}^{k-1} \gamma^i R_i \right] \) with \(\gamma \in (0,1)\) the discount factor. Conceptually it indicates that the later in future a reward is, less valuable it becomes.</li>
+	<li><b>Value Function</b> - The expected reward value starting from state \(s\) and following a policy \( \pi \): 
+	\[ \begin{align} V_{\pi}(s) &=  \mathbb{E}\left[ \sum_{i=0}^{k-1} \gamma^i R_i | S_t=s \right]\\ &= \mathbb{E}\left[ R_t + \gamma V_{\pi}(S_{t+1}) | S_t=s\right]\end{align}\]. 
+	Here \(S_{t+1}\) depends on the transition probability \(T\).
+	</li>
+	<li><b>Action-Value Function</b> - The expected reward value starting from state \(s\), taking action \(a\) and following a policy \( \pi \) onward: : 
+	\[ \begin{align} Q_{\pi}(s,a) &= \mathbb{E}\left[ R(s,a) + \gamma V_{\pi}(S_{t+1}) | S_t=s\right]\\ &= \mathbb{E}\left[ R(s,a) + \gamma \sum_{a' \in A}\pi(S_{t+1}, a')Q_{\pi}(S_{t+1},a') | S_t=s\right] \end{align}\]. 
+	</li>
+	<li><b>Advantage Function</b> - It represents how a given action stands over the other possible actions where the mean is zero. \[A_{\pi}(s,a) = Q_{\pi}(s,a) - V_{\pi}(s) \]</li>
+</ul>
+</p>
+
+<p>
+The last and key concept is the <i>optimal policy</i> \(\pi^*\) for which: \(V_{\pi^*}(s) \geq V_{\pi}(s), \quad \forall \pi, \quad \forall s\).
+\[ \begin{align} 
+V_{\pi^*}(s) &= \max_{\pi \in \Omega}\left( \sum_{a' \in A} \pi(s,a')Q_{\pi^*}(s,a')\right)\\
+             &= \max_{a \in A} Q_{\pi^*}(s,a)\\
+			 &= \max_{a \in A}\left\lbrace \mathbb{E}\left[ R(s,a) + \gamma V_{\pi^*}(S_{t+1}) | S_t=s\right] \right\rbrace
+\end{align} \]
+This is know as <i>Bellman Equation</i>, when both functions \(R\) and \(T\) are known, it can be used as the iterative step for the method known as <i>Value Iteration</i>.
+</p>
