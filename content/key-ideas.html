@@ -9,7 +9,7 @@ Deep Learning has been a trending topic for supervised learning tasks like detec
 </p>
 
 <p>
-Deep Q-Learning uses an artificial neural network taking a raw state representation as input and outputs its action-values to successfully learn how to play some Atari games. Many ideas of it were not new (In <a href="https://link.springer.com/content/pdf/10.1007/BF00992699.pdf">this</a> paper "Self-improving reactive agents based on reinforcement learning, planning and teaching." from 1992 the same concepts are used but without the expressive results of Deep Q-Learning), but the application using raw pixels from imagery, which is a large state space, brought a new breath to Reinforcement Learning with current technologies.
+Deep Q-Learning uses an artificial neural network taking a raw state representation as input and outputs its action-values to successfully learn how to play some Atari games. Many ideas of it were not new (In <a href="https://link.springer.com/content/pdf/10.1007/BF00992699.pdf">this</a> paper "Self-improving reactive agents based on reinforcement learning, planning and teaching." from 1992 the same concepts are used but without the expressive results of Deep Q-Learning), but the application using raw pixels from imagery with convolutional layers in network, brought a new breath to Reinforcement Learning with current technologies.
 <img class="image fit" src="images/network.svg"></img>
 </p>
 
@@ -49,4 +49,37 @@ Maintaining two networks is costly, hence in its implementation it uses a lagged
 <p>[Van Hasselt, Hado, Arthur Guez, and David Silver.] 
 "Deep reinforcement learning with double q-learning." Thirtieth AAAI Conference on Artificial Intelligence. 2016.
  - <a href="http://papers.nips.cc/paper/3964-double-q-learning">[ pdf ]</a>
+ </p>
+ 
+<header class="mini">
+<h3>Dueling Network</h3>
+<p>Network architecture with separated streams for value and advantage</p>
+</header>
+<p>
+
+<p>
+The dueling architecture for Deep Q-Learning, separates the inference of action-values into two components, the value \(V(s)\) and advantage \(A(s,a)\). We know the equality
+\[
+Q(s,a) = V(s) + A(s,a)
+\]
+Separating the neural network parameters in three parts:
+<ul>
+<li>\(\theta\) - The shared parameters which can be seen as the encoding of the inputs</li>
+<li>\(\alpha\) - The value function parameters</li>
+<li>\(\beta\) - The advantage function parameters</li>
+</ul>
+alpha and beta are called the streams of the network. The motivations for such architecture lies in the fact that for some states the actions taken my not be relevant. Having separated streams enforces that \(V(s)\) is updated for any action which leads to improvement for all action-values. Also the concept of shared parameters implies reaching an encoding which is consistent for both streams, which could be extended for others designs.
+</p>
+<p>
+The formula used to calculate \(Q(s,a)\) is slightly different from the original, the justification is that it is an approximation of the original values and the formula with value plus advantage may not be unique because shifting by any constant is equivalent, hence they choose to use a parametrization where the advantage has zero mean, which also improves the stability.
+\[
+Q_{\theta,\alpha,\beta}(s,a) = V_{\theta,\alpha}(s) + \left( A_{\theta, \beta}(s,a) - \frac{1}{|\mathcal{A}|}\sum_{a' \in \mathcal{A}} A_{\theta,\alpha}(s,a') \right)
+\]
+</p>
+
+<img class="image fit" src="images/dueling-nn.png"></img>
+
+<p>[Wang, Ziyu, et al.] 
+ "Dueling network architectures for deep reinforcement learning." arXiv preprint arXiv:1511.06581 (2015).
+ - <a href="https://arxiv.org/pdf/1511.06581.pdf">[ pdf ]</a>
  </p>
