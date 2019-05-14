@@ -33,13 +33,13 @@ Important concepts for the reinforcement learning framework are:
 <ul style="list-style-type:none">
 	<li><b>Trajectory(\(\tau\)) or Episode</b> - A complete sequence of tuples \((s, a, r)_t\) state, action and reward from a starting point to an end point of agent's life, for example the starting of a chess game till its ending.</li>
 	<li><b>Horizon</b> - The length of state, action and reward sequences visible for the agent in the process. It defines how long in the future an agent account for possible rewards. It can be finite \( k \) time steps or infinite.</li>
-	<li><b>Total Expected Reward</b> - The expectation of rewards from a trajectory \(\tau\), horizon \(k\): \( \mathbb{E}\left[ \sum_{i=0}^{k-1} R_i \right] \), with \(R_i\) the aleatory variable of rewards.</li>
+	<li><b>Total Expected Reward</b> - The expectation of rewards from a trajectory \(\tau\), horizon \(k\): \( \mathbb{E}\left[ \sum_{i=0}^{k-1} R_i \right] \), with \(R_i\) the random variable of rewards.</li>
 	<li><b>Discounted Expected Reward</b> - \( \mathbb{E}\left[ \sum_{i=0}^{k-1} \gamma^i R_i \right] \) with \(\gamma \in (0,1)\) the discount factor. Conceptually it indicates that the later in future a reward is, less valuable it becomes.</li>
 	<li><b>Value Function</b> - The expected reward value starting from state \(s\) and following a policy \( \pi \): 
 	\[ \begin{align} V_{\pi}(s) &=  \mathbb{E}\left[ \sum_{i=0}^{k-1} \gamma^i R_i | S_t=s \right]\\ &= \mathbb{E}\left[ R_t + \gamma V_{\pi}(S_{t+1}) | S_t=s\right]\end{align}\]. 
 	Here \(S_{t+1}\) depends on the transition probability \(T\).
 	</li>
-	<li><b>Action-Value Function</b> - The expected reward value starting from state \(s\), taking action \(a\) and following a policy \( \pi \) onward: : 
+	<li><b>Action-Value Function</b> - The expected reward value starting from state \(s\), taking action \(a\) and following a policy \( \pi \) onward:
 	\[ \begin{align} Q_{\pi}(s,a) &= \mathbb{E}\left[ R(s,a) + \gamma V_{\pi}(S_{t+1}) | S_t=s\right]\\ &= \mathbb{E}\left[ R(s,a) + \gamma \sum_{a' \in A}\pi(S_{t+1}, a')Q_{\pi}(S_{t+1},a') | S_t=s\right] \end{align}\]. 
 	</li>
 	<li><b>Advantage Function</b> - It represents how a given action stands over the other possible actions where the mean is zero. \[A_{\pi}(s,a) = Q_{\pi}(s,a) - V_{\pi}(s) \]</li>
@@ -47,11 +47,113 @@ Important concepts for the reinforcement learning framework are:
 </p>
 
 <p>
-The last and key concept is the <i>optimal policy</i> \(\pi^*\) for which: \(V_{\pi^*}(s) \geq V_{\pi}(s), \quad \forall \pi, \quad \forall s\).
+The last and key concept is the <i>optimal policy</i> \(\pi^*\) for which: \(V_{\pi^*}(s) \geq V_{\pi}(s), \quad \forall \pi, \quad \forall s\). Solving a decision problem is finding such policy or some distribution close to it.
 \[ \begin{align} 
 V_{\pi^*}(s) &= \max_{\pi \in \Omega}\left( \sum_{a' \in A} \pi(s,a')Q_{\pi^*}(s,a')\right)\\
              &= \max_{a \in A} Q_{\pi^*}(s,a)\\
 			 &= \max_{a \in A}\left\lbrace \mathbb{E}\left[ R(s,a) + \gamma V_{\pi^*}(S_{t+1}) | S_t=s\right] \right\rbrace
 \end{align} \]
-This is know as <i>Bellman Equation</i>, when both functions \(R\) and \(T\) are known, it can be used as the iterative step for the method known as <i>Value Iteration</i>.
+This is know as <i>Bellman Equation</i>. When both functions \(R\) and \(T\) are known, it can be used as the iterative step for the method known as <i>Value Iteration</i>.
+</p>
+
+<h3>Methods</h3>
+
+<h4>Temporal Difference</h4>
+<p>
+One method for approximating the value function is to iterate over the agent's experiences (trajectories) using <i>Temporal Differences</i>. It can be written as:
+\[
+V_{\pi}(s) \leftarrow V_{\pi}(s) + \alpha (r_s + \gamma V_{\pi}(s') - V_{\pi}(s))
+\]
+Looking close to it one can notice that the updating term is composed of a learning rate \( \alpha \) controlling how fast the values may change and inside there are \( r_s + \gamma V_{\pi}(s')\) which is exactly what goes inside the expectation of the value function defined before, and the difference term \(- V_{\pi}(s) \), so it is updating the value function based on the error of its approximation. From the trajectory we know: \(r_s\) the reward from state \(s\) and the next time step state \(s'\). Given those, if the trajectories supplied follow the policy \(\pi^*\), after many iterations \(V_{\pi}\) will be close to \( V_{\pi^*}\).
+</p>
+
+<p>
+This formulation present a vital challenge:
+<blockquote>
+	It assumes the trajectories experienced already follow the optimal policy \( \pi^*\), which in fact is what we wish to learn/use somewhat by approximating \(V_{\pi^*}\)
+</blockquote>
+The work around for this problem is sampling the agent's actions through the value function being learned greedily choosing the action leading to best value/state. This introduces <b>bias</b> in the learning. Because at the same time it tries to learn from samples, it samples from the learned value function and often get stuck in a sub-optimal policy. Each time it goes through a positive reward trajectory it reinforce the chances of sampling the same trajectory, hence it is common to the agent to stick to its first working behavior while if there was more exploration it could find better behaviors. 
+</p>
+
+<p>
+One way to explore the environment and avoid those sub-optimal policies is using the \(\epsilon\)-greedy sampling scheme. This scheme chooses a random action with a small probability \(\epsilon\) and with probability \(1-\epsilon\) follow the original policy \(\pi\). This parameter controls how much of what was learned is used and how much is explored, the problem of balancing both behaviors is known as <i>Exploration-Exploitation</i>.
+</p>
+
+<h4>Q-Learning</h4>
+
+<p>
+Sampling a policy from value function requires one to look one time ahead and choose an action based on possible future values. An easier way of doing so is learning the action-value function and directly choosing an action for the current state. This motivates for the method called <i>Q-Learning</i>. It uses the same idea of temporal difference with a slightly variation:
+\[
+Q_{\pi}(s,a) \leftarrow Q_{\pi}(s,a) + \alpha (r_s + \gamma \max_{a \in A}Q_{\pi}(s',a) - Q_{\pi}(s,a))
+\]
+The maximum implies that when updating the action-values we consider as the agent takes the best greedy action in the next state, while when sampling actions this may not be the behavior of the agent. In other words we use a greedy best policy for updates while for sampling actions other policy may be used. The method using action-value function without the maximum operator in its updating term is known as <i>SARSA</i>.
+</p>
+<p>
+Methods who account for the policy being used in the learning are called <i>On-police</i>, for example the temporal difference with an agent following a policy \(\pi\) which is also used to determine the next state \(s'\) in the updating term is on-policy. In the other hand, the Q-Learning which in the updating term chooses the next state action based on the maximum value-action function independently of the policy being followed by the agent, is called <i>Off-policy</i> method.
+</p>
+
+<p>
+Common ways of sampling actions from learned action-value functions are:
+<ul>
+	<li>Greed: \( a = \arg \max_{a'} Q_{\pi}(s,a')\)</li>
+	<li>\(\epsilon\)-Greedy: \(P(a \sim \pi) = 1 - \epsilon\) and \(P(a \sim U(A)) = \epsilon\)</li>
+	<li><i>Softmax</i>: \( P(a | S_t=s) = \frac{e^{Q_{\pi}(s,a)}}{ \sum_{a' \in A}e^{Q_{\pi}(s,a')}}\)</li>
+</ul>
+</p>
+
+<h4>Representation</h4>
+
+<p>Representing the learned action-values in a table mapped form \(Q(s,a)\) can be prohibitive for large state spaces, and the knowledge is not generalized for unseen states. In this matter parametric models in the form
+\[ Q_{\theta}(s,a) = f(\theta, s, a)\]
+where \(\theta_i\) are the parameters of the model, can both represent the knowledge in a compact way and also generalize for other states which were not seen before.
+</p>
+
+<p>
+Now instead of learning the values directly we try to fit the model according with the observations. The simplest way of doing so is by least squares and gradient descent. First we define the error:
+\[ err = \frac{(q_{s,a} - Q_{\theta}(s,a))^2}{2}\]
+where \(q_{s,a}\) is the observed value and \(Q_{\theta}(s,a)\) is the model value. Then using the gradient descent we optimize the parameters \(\theta\) iteratively
+\[\theta \leftarrow \theta - \alpha \nabla_{\theta}err\]
+in our case the Q-Learning iteration would be
+\[
+\theta_i \leftarrow \theta_i -\alpha (r_{s,a} + \gamma \max_{a' \in A}Q_{\theta}(s',a') - Q_{\theta}(s,a))\frac{\partial Q_{\theta}(s,a)}{\partial \theta_i}
+\]
+</p>
+
+<p>
+The model \(f(\theta, s, a)\) can also be a deep neural network and in these cases we can find the same Q-Learning named Deep Q-Learning.
+</p>
+
+<h4>Policy Search</h4>
+
+<p>Following the parametric representation one idea emerge, why not learn directly a parametrized policy \(\pi_{\theta}\)? This leads to a class o methods known as <i>policy search</i>. The problem can be posed as:
+<blockquote>
+Finding \(\pi_{\theta}\) which generates trajectories \(\tau = ((s_0,a_0,r_0), \cdots,(s_n,a_n,r_n))\) maximizing the total discounted reward with horizon \(k\) at time \(t\),
+\[
+R(\tau) = \sum_{i=0}^{k-1} \gamma^i R_{t+i}
+\]
+</blockquote>
+</p>
+
+<p>
+\(\tau\) is a random variable and we want to maximize its expectation \[J(\theta) = \mathbb{E}_{\tau \sim \pi_{\theta}}[R(\tau)]\]
+using the gradient ascent with the following iteration:
+\[
+\theta = \theta + \alpha \nabla_\theta J(\theta)
+\]
+Expanding the expectation and using the log trick (\(f(x) \nabla_x \log f(x) = \nabla_x f(x)\))
+\[
+\begin{align*}
+\nabla_\theta J(\theta) &= \nabla_\theta\mathbb{E}_{\tau \sim \pi_{\theta}}\left[ R(\tau) \right]\\
+  &=  \int_{\tau \sim \pi_{\theta}} \nabla_\theta P(\tau|\theta)R(\tau) d\tau\\
+  &= \int_{\tau \sim \pi_{\theta}} P(\tau|\theta)\nabla_\theta \log P(\tau|\theta)R(\tau) d\tau\\
+  &= \mathbb{E}_{\tau \sim \pi_{\theta}} \left[ \nabla_\theta \log P(\tau|\theta)R(\tau) \right]\\
+  &= \mathbb{E}_{\tau \sim \pi_{\theta}} \left[ \nabla_\theta \log\left(p(s_0) + \prod_{i=0}^{k-1} \pi(s_i,a_i) T(s_i, a_i, s_{i+1}) \right) R(\tau) \right]\\
+  &= \mathbb{E}_{\tau \sim \pi_{\theta}} \left[ \sum_{i=0}^{k-1} \nabla_\theta \log \pi(s_i,a_i)  R(\tau) \right]
+\end{align*}
+\]
+Finally we can approximate this expectation from samples in the form
+\[
+\hat{\nabla_\theta J(\theta)} \approx \frac{1}{N}\sum_{\tau}\sum_{i=0}^{k-1}\nabla_\theta \log \pi(s_i,a_i)  r_{\tau}
+\]
+and use it in the gradient ascent step. This is the base for policy search methods, \(r_{\tau}\) is the sum of the experienced rewards for the given trajectory and horizon. It's interesting to notice that this sum does not depend on \(\theta\), and it is in a sense a measure of the quality of the state/action, because of this the same expansion can be done using other values as <i>baselines</i> instead of \(r\), some of them are the reward to go, value, action-value and advantage functions, which can lead to less variance in the learning process.
 </p>

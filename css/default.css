@@ -3225,7 +3225,6 @@ html {
 		padding: 6rem;
 		margin: 0;
 	}
-
 		header h2 {
 			position: relative;
 			padding-bottom: .75rem;
@@ -3274,6 +3273,53 @@ html {
 				}
 
 					header h2:after {
+						width: 50%;
+					}
+
+		}
+		
+	header.mini {
+		text-align: center;
+		background: #FFFFFF;
+		padding: 3rem;
+		margin: 0;
+	}
+		header.mini h3 {
+			position: relative;
+			padding-bottom: .75rem;
+		}
+
+			header.mini h3:after {
+				content: '';
+				position: absolute;
+				margin: auto;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				width: 10%;
+				height: 1px;
+				background-color: rgba(0, 0, 0, 0.125);
+			}
+
+		header.mini p {
+			text-transform: uppercase;
+			font-weight: 300;
+			font-size: .7rem;
+			letter-spacing: .25rem;
+			margin: 0;
+		}
+
+		@media screen and (max-width: 736px) {
+
+			header.mini {
+				padding: 2rem;
+			}
+
+				header.mini h3 {
+					font-size: 1rem;
+				}
+
+					header.mini h3:after {
 						width: 50%;
 					}
 
