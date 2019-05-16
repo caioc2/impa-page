@@ -1,20 +1,23 @@
 <h2>Some papers and their key ideas for Deep Reinforcement Learning</h2>
 <header class="mini">
 <h3>Experience Replay</h3>
-<p>Re-utilizing sampled experiences</p>
+<p>Re-utilizing sampled experiences - Efficiency</p>
 </header>
 <p>
-Deep Learning has been a trending topic for supervised learning tasks like detection, classification, segmentation etc. Trying to transfer this success to other areas may present it own challenges.
+Simulating agent actions inside an environment can be costly and the order in which it happens is correlated to previous actions and states. Algorithms using temporal differences learn slowly and need to experience the same state/action various times to approximate any given action or action-value function correctly. In these cases, storing previous experiences in the form of a tuple \((s_t, a_t, r_t, s_{t+1})\) for later usage can be beneficial.
 </p>
 
 <p>
-Deep Q-Learning uses an artificial neural network taking a raw state representation as input and outputs its action-values to successfully learn how to play some Atari games. Many ideas of it were not new (In <a href="https://link.springer.com/content/pdf/10.1007/BF00992699.pdf">this</a> paper "Self-improving reactive agents based on reinforcement learning, planning and teaching." from 1992 the same concepts are used but without the expressive results of Deep Q-Learning), but the application using raw pixels from imagery with convolutional layers in network, brought a new breath to Reinforcement Learning with current technologies.
-<img class="image fit" src="images/network.svg"></img>
+The simplest and most common form of using experience replay is storing \(n\) experience tuples  without updating the model, and after sampling mini batches of those experiences for training, where you can process the experiences \(k\) times, or more common called <i>epochs</i>. Both \(n\) and \(k\) choice have trade offs. For \(n\), lower numbers give your faster updates of the model, while larger numbers ensures more stable (diversity) updates. For \(k\), lower numbers ensures no over-fitting at the cost of slow learning (sample efficiency), while larger numbers increase the sample efficiency but brings the possibility of over-fitting.
+</p>
+<p>
+In the paper <a href="https://link.springer.com/content/pdf/10.1007/BF00992699.pdf">"Self-improving reactive agents based on reinforcement learning, planning and teaching"</a> from 1992 the are already results showing that experience replay can significantly improve the learning speed and sample efficiency. From later 2000, many papers covers the benefits and extensions for experience replay.
 </p>
 
-<p>[Mnih, Volodymyr, et al.] 
-"Playing atari with deep reinforcement learning." arXiv preprint arXiv:1312.5602 (2013).
- - <a href="https://arxiv.org/pdf/1312.5602.pdf">[ pdf ]</a>
+  
+<p>[Adam, Sander, Lucian Busoniu, and Robert Babuska.] 
+"Experience replay for real-time reinforcement learning control." IEEE Transactions on Systems, Man, and Cybernetics, Part C (Applications and Reviews) 42.2 (2011): 201-212..
+ - <a href="http://www.busoniu.net/files/papers/smcc11.pdf">[ pdf ]</a>
  </p>
 
 <header class="mini">
@@ -99,4 +102,28 @@ Q_{\theta,\alpha,\beta}(s,a) = V_{\theta,\alpha}(s) + \left( A_{\theta, \beta}(s
 <p>[Wang, Ziyu, et al.] 
  "Dueling network architectures for deep reinforcement learning." arXiv preprint arXiv:1511.06581 (2015).
  - <a href="https://arxiv.org/pdf/1511.06581.pdf">[ pdf ]</a>
+ </p>
+ 
+ <header class="mini">
+<h3>Curriculum Learning</h3>
+<p>Gradually increasing complexity</p>
+</header>
+<p>
+
+<p>
+A key concept of human learning is starting from simple things and increasing complexity. Our entire education is organized in a way of leveraging previous knowledge. <i>Curriculum Learning</i> is an abstraction of this concept for machine learning. (Some of the)Difficult tasks in reinforcement learning can be broken into smaller and simpler sub-tasks or viewed as steps to achieve the final goal.
+</p>
+
+<p>
+This concept work extremely well for hierarchical tasks. For example the <a customhref="content/rubiks-cube.html">2x2 Rubik's Cube</a>, where to solving complex configurations implies in being able to solve simpler configurations. The mathematical concept of increasing complexity can be seen as increasing entropy. The curriculum itself can be placed as steps where the entropy \(H(C_{\lambda}) < H(C_{\lambda + \epsilon}), \quad \forall \epsilon > 0\), with \(C_{\lambda}\) the distribution of the curriculum at \(\lambda\) step.
+</p>
+
+<p>
+Experiments (including ours with the Rubik's cube) shows that learning simple tasks and adapting to increasing complex tasks accelerates the learning, and for some cases a proper curriculum is the difference of learning a given task of not being able to learn anything. This is one case where our intuition of human learning, through sub-sets and re-utilizing previous knowledge to generalize or expand into new knowledge coincides with the machine learning experiments.
+</p>
+
+
+<p>[Bengio, Yoshua, et al.] 
+ "Curriculum learning." Proceedings of the 26th annual international conference on machine learning. ACM, 2009.
+ - <a href="https://qmro.qmul.ac.uk/xmlui/bitstream/handle/123456789/15972/Bengio%2C%202009%20Curriculum%20Learning.pdf">[ pdf ]</a>
  </p>
