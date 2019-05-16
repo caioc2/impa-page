@@ -37,6 +37,7 @@
 		</ul>
 	</div><!-- /dl-menuwrapper -->
 	<a href="index.html">HOME</a>
+	
 </div>
 
 <section id="content-sec" class="wrapper style1">
@@ -78,7 +79,7 @@
 							bindTriggers();
 							MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 						}
-						
+						$("body").scrollTop(($('#content-sec').offset().top));
 					} 
 					xhttp.open("GET", file, true);
 					xhttp.send();
@@ -105,7 +106,6 @@
 			    bindTriggers();
 			});
 			includeHTML();
-			
 		</script>
 	</body>
 </html>

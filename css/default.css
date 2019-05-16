@@ -87,6 +87,17 @@ html {
     height: 100%;
 }
 
+#back2Top {
+    cursor: pointer;
+    -moz-transform: rotate(270deg);
+    -webkit-transform: rotate(270deg);
+    -o-transform: rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: rotate(270deg);
+	margin-top: 10px;
+}
+
+
 /* Copy from  templated */
 @import url(font-awesome.min.css);
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700");
