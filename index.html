@@ -79,7 +79,7 @@
 							bindTriggers();
 							MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 						}
-						$("body").scrollTop(($('#content-sec').offset().top));
+						$("html, body").scrollTop(($('#content-sec').offset().top));
 					} 
 					xhttp.open("GET", file, true);
 					xhttp.send();
