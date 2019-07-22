@@ -2,17 +2,18 @@
 
 <h3>Introduction</h3>
 <p>Creating an intelligent agent with reinforcement learning can vary from easy to very difficult depending of the complexity of the desired behavior, state and action spaces, and the reward assignment.</p> 
-<p>From past experiences we know that the <i>Credit Assignment Problem</i> is a key point of RL. With <a customhref="content/rubiks-cube.html">Rubik's Cube</a>  we overcame this problem by using a curriculum learning and we're able to solve very well the \(2\times 2\) case, a Unity ML-Agents example <a href="https://blogs.unity3d.com/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo: The Corgi</a> showed that a well developed reward and observation system can entirely avoid sparse rewards and work on complex tasks (controlling a character directly by applying forces in its joints).</br>
-Here we want to experiment with ML-Agents visual observations. The task is "simply" collect items in a given 3D map, but with raw visual observations and sparse rewards. (For reference, applying RL successfully in 2D Atari games were shown in <a href="https://arxiv.org/abs/1312.5602">Playing Atari with Deep Reinforcement Learning</a>)</p>
+<p>From past experiences we know that the <i>Credit Assignment Problem</i> is a key point of RL. With <a customhref="content/rubiks-cube.html">Rubik's Cube</a>  we overcame this problem by using a curriculum learning and we're able to solve very well the \(2\times 2\) case, a Unity ML-Agents example <a href="https://blogs.unity3d.com/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo: The Corgi</a> showed that a well developed reward and observation system can entirely avoid sparse rewards and work on complex tasks (controlling a character directly by applying forces in its joints).</p>
+
+<p>Here we want to experiment with ML-Agents visual observations. The task is "simply" collect items in a given 3D map, but with raw visual observations and sparse rewards. (For reference, applying RL successfully in 2D Atari games were shown in <a href="https://arxiv.org/abs/1312.5602">Playing Atari with Deep Reinforcement Learning</a>)</p>
 
 <h3>Task Overview</h3>
-<p>To successfully (not optimally though) solve this problem the agent must learn how to identify the pink objects in the image, which may be <i>more than one</i> and direct its movement to one of them. When there is no collectible in the image it must explore the environment. Last, it need to avoid trespassing the marked white border. Summing up, it needs to create a sense of spatial positioning in a 3D (projective) environment from a <i>single</i> 2D image, all that by only receiving rewards when leaving the delimited area or collecting a pink object.</p> 
+<p>To successfully (not optimally though) solve this problem the agent must learn how to identify the pink objects in the image, which may be <i>more than one</i>, and direct its movement to one of them. When there is no collectible in the image it must explore the environment. Last, it need to avoid trespassing the marked white border. Summing up, it needs to create a sense of spatial positioning in a 3D (projective) environment from a <i>single</i> 2D image, all that by only receiving rewards when leaving the delimited area or collecting a pink object.</p> 
 
 <h3>Environment and modeling</h3>
 
 <p>Our environment is an adaptation of the <i>CharacterThirdPerson</i> from Unity Standard Asset<p>
 <img class="image fit" src="images/3rdPerson-sa.jpg"></img>
-<p> <i>Ethan</i> is our third person character. It has standard controls and animations like walking, running, jumping, crouching. Those actions are tied to keyboard keys. The changes made to this scene are the following:</p>
+<p> <i>Ethan</i> is our third person character. It has standard controls and animations like walking, running, jumping and crouching. Those actions are binded to keyboard keys. The changes made to this scene are the following:</p>
 <ul>
 	<li>Removed obstacles</li>
 	<li>Added more pink objects. These objects now are randomly spawned and also collectibles</li>
@@ -29,19 +30,23 @@ Here we want to experiment with ML-Agents visual observations. The task is "simp
 	<li>Jump, Crouch \(\in \{0,1\}\) (unused)</li>
 </ul>
 
+<p>
+Each control is an action branch in our ML-Agent brain. This means all action can occur simultaneously and independently.
+</p>
+
 <ul>Rewards
 	<li>\(+1\) for collecting a pink object</li>
 	<li>\(-1\) and game over when going outside the delimited area (white border)</li>
 	<li>\(-0.0005\) for each time step (this choice was made based on the extent of the episode length)</li>
 </ul>
 
-<p>These modeling express our objective: Having a "brain" which can take high level decisions (not like the Puppo joint controls) but it has completely sparse rewards, reaching a pink cube can take several frames and most, if not all, of the choices made have some influence to the end result. All that taking only* visual observations of the form:</p>
+<p>These modeling express our objective: Having a brain which can take high level decisions (not like the Puppo joint controls) but it has completely sparse rewards. Reaching a pink cube can take several frames and most, if not all, of the choices made have some influence to the end result. All that taking only visual observations of the form:</p>
 <figure style="text-align:center;">
 <img class="image fit" src="images/visual-ob.png"></img>
 <figcaption>Left scene image, right low-res \(84\times 84\) visual observation utilized.</figcaption>
 </figure></br>
 
-<p>Another important point in the agent modeling is that we use <i>on request decisions</i>. Requesting a decision each frame can be quite demanding when using visual observations depending of # of frames and the CPU/GPU present, so as the usual, we request a decision each \(k\) frames and stick with that decision for the others \(k-1\) frames. In our case we use \(k=3\), and there is no interpolation between the decisions. It may lead to "spiked" behavior of your character but it is more a visual comfort matter than a problem itself.</p>
+<p>Another important point in the agent modeling is that we use <i>on request decisions</i>. Requesting a decision each frame can be quite demanding when using visual observations depending of # of frames and the CPU/GPU present, so as the usual, we request a decision each \(k\) frames and stick with that decision for the others \(k-1\) frames. In our case we use \(k=3\), and there is no interpolation between the decisions. It may lead to "spiked" behavior of our character but it is more a visual comfort matter than a problem itself.</p>
 
 <h3>Training</h3>
 
@@ -49,7 +54,7 @@ Here we want to experiment with ML-Agents visual observations. The task is "simp
 In the Unity editor the last set parameters were:</p>
 <ul>
 	<li>Academy time scale: \(5\). </br>
-	Using higher time scales when the scene depends of physics interactions and visual observations can lead to wrong simulations which does not work on the intended time scale \(1\). As a first try we were conservative and set it to \(5\).</li>
+	Using higher time scales when the scene depends on physics interactions and visual observations can lead to wrong simulations which does not work on the intended time scale \(1\). As a first try we were conservative and set it to \(5\).</li>
 	<li>Agent max steps: \(10000\). </br>
 	Each decision counts as one step, which with our decision interval \(k=3\), means we are running it for \(30000\) frames, supposing a frame rate of 60 fps each episode lasts at maximum for 500 seconds(~8 minutes).</li>
 </ul>
@@ -60,11 +65,11 @@ In the Unity editor the last set parameters were:</p>
 	The Proximal Policy Optimization algorithm.</li>
 	
     <li>batch_size: \(4096\)</br>
-	The batch size, usually larger values are needed for continuous space actions.</li>
+	The batch size, usually large values are needed for continuous space actions modeled as mean and variance.</li>
     <li>buffer_size: \(20480\)</br>
 	The buffer size, usually could be greater for a more stable training, but given that the inputs are images one would need a lot of RAM to store it.</li>
     <li>hidden_units: \(512\) & num_layers: \(2\)</br>
-	The number of perceptrons per layer and the number of layers. Both are related to the fully-connected network, the convolutional layers have fixed size/layout and are internal to the ML-Agents. It can be changed in the python code but not as a parameter.</li>
+	The number of perceptrons per layer and the number of layers. Both are related to the fully-connected network, the activation function used is the <a href="https://arxiv.org/abs/1710.05941">Swish</a>. The convolutional layers have fixed size/layout and are internal to the ML-Agents. It can be changed in the python code but not as a parameter. For reference its layout is two convolutional layers \((num\_filters, kernel\_size, stride\_size, activation)\), the first with \((16,8,4, elu)\) and the second \((32,4,2,elu)\).</li>
     <li>learning_rate: \(3\times 10^{-4}\)</br>
 	Default learning rate of ML-Agents.</li>
     <li>max_steps: \(5\times 10^6\)<br>
@@ -78,6 +83,7 @@ In the Unity editor the last set parameters were:</p>
 <img class="image fit" src="images/reward.png"></img>
 <figcaption>Tensorboard cumulative reward, including the changes while training.</figcaption>
 </figure></br>
+<p>From the figure in the early steps it was not learning, be it by the parameters/environment settings. The learning process was stopped before converging, where the rewards should have stabilized, and yet, it achieved a interesting result.</p>
 
 <p>Interesting facts while training</p>
 <ul>
@@ -92,7 +98,7 @@ In the Unity editor the last set parameters were:</p>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/FV9JF59qfik" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div></br>
 
-<p> From the video we can see it learned something, but still not perfect. For the first item we can see the character missing a cube with is closer to get the coin. We can suppose it is choosing objects by it's size, when the coin gets bigger it ignores the cube. This is something clear to the human vision, but our brains can already hallucinate a 3D environment from a 2D image, because <i>we were trained with stereo vision</i>. One interesting thing would be training with two images stereo, would the agent correct predict distance or base it's decision on object size?</p>
+<p> From the video we can see it learned something, but still not perfect. For the first item we can see the character missing a cube with is closer to get the coin. We can suppose it is choosing objects by it's size, when the coin gets bigger it ignores the cube. This is something clear to the human vision, but our brains can already hallucinate a 3D environment from a 2D image, because <i>we were trained with stereo vision</i>. One interesting thing would be training with stereo images. Would the agent correct predict distance or base it's decision on object size?</p>
 
 <p> Another point is the walking/running behavior. It looks like the agent run when it's "very safe to", it may be because it lacks the sense of velocity. A common technique used for modeling velocity is passing sequential stacked frames or using <a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">LSTM networks</a>, it could be useful to try out those things here to control and improve the agent velocity.</p>
 
