@@ -1,11 +1,68 @@
+<header class="mini">
 <h2>Unity Animation</h2>
+<p>Creating a playable character</p>
+</header>
+
+<h3>Introduction</h3>
+
+<p>Creating a playable character in Unity takes more work than just having a model and animation clips. In the next sections we are going to look at the basics of how to put together the model and its animation clips in a playable character starting from a <i>*.fbx</i> file containing the data.</p>
 
 
-<h3>(FBX)Importing, Cutting, Loop & Cycle</h3>
+<h3>Importing, Rigging & Avatar</h3>
+
+<p>Importing an <i>fbx</i>  file into Unity is as simple as placing it in the <code>"YourProjectName"/Assets/</code> folder. Inside Unity it will look like a single object with an side arrow. Expanding it will show everything contained inside, like the armature, skinning, materials, mesh, animation clips or anything else.</p>
+
+<img class="image fit" src="images/fbx.png"></img>
+
+<p>In our case we have a dog "kolly". As soon as you select the fbx the inspector window  will have the import settings.</p>
+
+<div class="spotlight">
+	<div class="image flush"> <img class="image 50%" src="images/rigging.png"></img></div>
+	<div class="inner">
+		<p>On the <i>rig</i> tab you can specify the following properties:
+		<ul>
+			<li><b>Animation type:</b> <code>humanoid</code> for humanoids and <code>generic</code> for any other type of characters.</li>
+			<li><b>Avatar definition:</b> <code>no avatar</code>, <code>create from this model</code> and <code>copy from other avatar</code>. An avatar is an object that relates the bones animation to the mesh deformation or <i>muscles definition</i>. It is very useful for humanoid characters because it let one connect different shaped bodies to the same animation. For example, you could use the same walking animation for characters with different height. Another point is: you can't use an AnimatorController without having an avatar, even if you don't plan to use various characters with different shapes.</li>
+			<li><b>Root bone:</b> the root bone of the skeleton (only appears for generic types).</li>
+			<li><b>Skin weights:</b> Bone/mesh interaction weights import mode.</li>
+		</ul>
+		</p>
+	</div>
+</div>
+
+<p>After configuring the rigging you must "apply" the modifications and Unity will process them.</p>
+
+
+<h3>Animation clips: cut, loop and cycle</h3>
+
+<p>The next tab after rig is the <i>Animation</i>. In this tab you can select to import or not animation clips, re-sample/compress its curves and edit animation clips properties.</p>
+
+<img class="image fit" src="images/anim.png"></img>
+
+<p>Following the general properties, there is a list of animation clips. When selecting any of the clips and scrolling down there will be options of how to export this clip.
+<ul>
+	<li><b>Length bar:</b> here one can cut the clip. It is useful for various situations, for example when all clips are in the same take, you can cut and separate them and also when fine tunning the length for with a controller and blend trees.</li>
+	<li><b>Loop Time:</b> Enables the animation to loop.</li>
+	<li><b>Loop Pose:</b> For animations where the final pose is different from the initial pose, enabling this option smooths the animation loop between pose.</li>
+	<li><b>Cycle Time:</b> Normalized starting time of the animation \( \in [0,1]\). Useful to synchronize clips in a blend tree like walking/running.</li>
+</ul>
+</p>
+<div>
+	<div class="image 50%" style="text-align: center">
+	Without loop pose.<br>
+	<video src="images/not_smooth.webm" controls></video>
+	</div>
+	<div class="image 50%" style="text-align: center">
+	With loop pose.<br>
+	<video src="images/smooth.webm" controls>
+	</video>
+	</div>
+</div>
+
 
 <h3>Keyframe Edit & Preview</h3>
 
-<h3> Rigging & Avatar </h3>
+
 
 <h3>Animator Controller<h3>
 
