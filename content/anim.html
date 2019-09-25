@@ -29,7 +29,7 @@
 		</p>
 	</div>
 </div>
-
+<br>
 <p>After configuring the rigging you must "apply" the modifications and Unity will process them.</p>
 
 
@@ -47,7 +47,7 @@
 	<li><b>Cycle Time:</b> Normalized starting time of the animation \( \in [0,1]\). Useful to synchronize clips in a blend tree like walking/running.</li>
 </ul>
 </p>
-<div>
+<div style="margin: 3rem">
 	<div class="image 50%" style="text-align: center">
 	Without loop pose.<br>
 	<video src="images/not_smooth.webm" controls></video>
@@ -58,7 +58,42 @@
 	</video>
 	</div>
 </div>
+<br>
+<h4>Root Motion Options</h4>
 
+<p>Animation clips where the root transform bone changes along the clip are considered to have root motion. Unity takes the delta between animation frames and apply this movement (rotations and translations) to the entire game object. For example an walking animation where the root bone starts at position \(p_0\) and ends at \(p_1 \neq p_0\) would have a motion in the direction \(p_1 - p_0\) making the gameObject whose it is attached to move in the scene.</p>
+
+<p>The options <code>Root Transform</code> control how this root motion should be interpreted by Unity. Enabling <code>Bake Into Pose</code> does not apply it to the gameObject. One can choose separately which movements (transforms) to apply or bake, they are <code>Rotation</code>, <code>Transform Y</code>(vertical move), <code>Transform XZ</code>(horizontal move).</p>
+
+Other options are:
+<div class="spotlight">
+	<div class="image flush"> <img class="image 50%" src="images/rootmotion.png"></img></div>
+	<div class="inner">
+		<ul>
+			<li><b>Curves:</b> Create additional parameter curve based on animation time, which can be used to control other effects/events.</li>
+			<li><b>Events:</b> Enable to control external events based on animation time</li>
+			<li><b>Mask:</b> Control which bones to animate. </li>
+			<li><b>Motion:</b> Choose from which bone comes the root motion if other than the root.</li>
+		</ul>
+	</div>
+</div>
+
+<!-- TODO fix video size -->
+<div style="margin: 3rem;">
+	<div class="image 50%" style="text-align: center; float: left;">
+	With root motion.<br>
+		<div class="video-container">
+		<video width="428" height="334" src="images/rootmotion.webm" frameborder="0" controls></video>
+		</div>
+	</div>
+	<div class="image 50%" style="text-align: center;">
+		Baked root motion.<br>
+		<div class="video-container">
+		<video width="428" height="334" src="images/bakedrootmotion.webm" frameborder="0" controls></video>
+		</div>
+	</div>
+</div>
+<br>
 
 <h3>Keyframe Edit & Preview</h3>
 
