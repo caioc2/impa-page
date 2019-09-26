@@ -122,7 +122,26 @@ Other options are:
 
 <p>The parameters are created by the user on the "plus" sign, they can be of four types: boolean, float, integer or trigger (which is a boolean that resets its state when consumed by some transition). Those parameters can be used used to control both the transition conditions and the animation blending. They are accessed by their name and type from C#.</p>
 <div id="animatorSet"><script> loadGist("animatorSet",'https://gist.github.com/caioc2/6538f07e4d083c7ec046803cdfcb46a4.json');</script></div>
+<p> where:
+<ul>
+    <li><code>void SetFloat(string name, float value, float dampTime, float deltaTime);</code></li>
+	<li><code>void SetInteger(string name, int value);</code></li>
+	<li><code>void SetBool(string name, float value);</code></li>
+</ul>
+The parameters can also be read with the equivalent "Get" functions.
+</p>
 
+<div class="spotlight">
+	<div class="image flush">
+		<img class="image" src="images/transition.png"></img>
+	</div>
+	<div class="inner">
+		<p>Transitions are descriptions of how and when to move between states. They can be created by right click on a source state and selecting <code>Make transition</code> and then clicking on the destination state.
+		The condition list is treated as a logic "and" among the selected variables and its values. For booleans it admits <code>true/false</code>, for floating point <code>less/greater than</code> and for integer <code>less/greater than, equal, not equal</code>. One can create the logic "or" by creating multiple transitions between the same two states. More complex conditions can also be handled by C# code and setting a single boolean as transition.</p>
+		<div id="complexc"><script>loadGist('complexc','https://gist.github.com/caioc2/7d4d917f82b5b67385c78b5fcd5322be.json');</script></div>
+		<p>In this example we check for not walking (steering/forward velocity) and other states like crouch, jump and if it is grounded and how much time it is in this condition to set the idle boolean.</p>
+	</div>
+</div>
 <!-- -->
 state, sub state machine, transitions
 
