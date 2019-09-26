@@ -63,7 +63,7 @@
 
 <p>Animation clips where the root transform bone changes along the clip are considered to have root motion. Unity takes the delta between animation frames and apply this movement (rotations and translations) to the entire game object. For example an walking animation where the root bone starts at position \(p_0\) and ends at \(p_1 \neq p_0\) would have a motion in the direction \(p_1 - p_0\) making the gameObject whose it is attached to move in the scene.</p>
 
-<p>The options <code>Root Transform</code> control how this root motion should be interpreted by Unity. Enabling <code>Bake Into Pose</code> does not apply it to the gameObject. One can choose separately which movements (transforms) to apply or bake, they are <code>Rotation</code>, <code>Transform Y</code>(vertical move), <code>Transform XZ</code>(horizontal move).</p>
+<p>The options <code>Root Transform</code> control how the root motion should be interpreted by Unity. Enabling <code>Bake Into Pose</code> does not apply it to the gameObject. One can choose separately which movements (transforms) to apply or bake, they are <code>Rotation</code>, <code>Transform Y</code>(vertical move), <code>Transform XZ</code>(horizontal move).</p>
 
 Other options are:
 <div class="spotlight">
@@ -71,8 +71,8 @@ Other options are:
 	<div class="inner">
 		<ul>
 			<li><b>Curves:</b> Create additional parameter curve based on animation time, which can be used to control other effects/events.</li>
-			<li><b>Events:</b> Enable to control external events based on animation time</li>
-			<li><b>Mask:</b> Control which bones to animate. </li>
+			<li><b>Events:</b> Enable to control external events based on animation time.</li>
+			<li><b>Mask:</b> Control which bones to animate.</li>
 			<li><b>Motion:</b> Choose from which bone comes the root motion if other than the root.</li>
 		</ul>
 	</div>
@@ -97,10 +97,33 @@ Other options are:
 
 <h3>Keyframe Edit & Preview</h3>
 
+<p>It is possible to edit and preview each key-frame of an animation clip. While it isn't a graphical interactive tool, one can make simple modifications to the numeric values of the transformation (position, rotation and scale) of each bone and the root motion, adding/removing key-frames of the full clip or particular bones.</p>
 
+<img class="image fit" src="images/animwindow.png"></img>
 
-<h3>Animator Controller<h3>
+<p>One can open the animation window by double click in any animation or in the menu <code>Window > Animation > Animation (CTRL+6)</code>. To enable the preview of the selected key-frame it is necessary to, after having the window open, select the proper gameObject in the scene.</p>
 
+<h3>Animator & Character Controller</h3>
+<div class="spotlight">
+	<div class="image flush">
+		<img class="image" src="images/animator.png"></img>
+	</div>
+	<div class="inner">
+		<p>In order to create an animated character it is necessary to have an <i>Animator</i> Component in the desired gameObject. This component requires a <code>Controller</code> which is a state machine for the animation clips, and an <code>Avatar</code>, in our case the one created when selecting the <i>Rig</i> properties while importing the fbx file. The other parameters are <code>Update Mode</code> which controls how the animation updates are made (synchronous or asynchronous with the physics engine), and <code>Culling Mode</code> which controls if and how the animation is played when the gameObject is not (or partially) visible.
+		</p>
+	</div>
+</div>
+
+<h4>Animator Controller</h4>
+
+<p>The animator controller is a <i>state machine</i> where the behavior of the character animation is defined. It is composed of parameters, states, and transitions.</p>
+
+<img class="image" src="images/animatorcontroller.png"></img>
+
+<p>The parameters are created by the user on the "plus" sign, they can be of four types: boolean, float, integer or trigger (which is a boolean that resets its state when consumed by some transition). Those parameters can be used used to control both the transition conditions and the animation blending. They are accessed by their name and type from C#.</p>
+<div id="animatorSet"><script> loadGist("animatorSet",'https://gist.github.com/caioc2/6538f07e4d083c7ec046803cdfcb46a4.json');</script></div>
+
+<!-- -->
 state, sub state machine, transitions
 
 <h3>Physics, Colliders and Raycast</h3>

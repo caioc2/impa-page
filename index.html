@@ -41,7 +41,6 @@
 	<a href="index.html">HOME</a>
 	
 </div>
-
 <section id="content-sec" class="wrapper style1">
 	<div id="html-content" class="content" content="content/home.html"> </div>
 	  
@@ -72,7 +71,13 @@
 				elem = document.getElementById("html-content");
 				file = elem.getAttribute("content");
 				if (file) {
-					/* Make an HTTP request using the attribute value as the file name: */
+
+					$("#html-content").load(file);
+					bindTriggers();
+					MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+					$("html, body").scrollTop(($('#content-sec').offset().top));
+					//$("#html-content > script").ready();
+					/*/* Make an HTTP request using the attribute value as the file name: *
 					xhttp = new XMLHttpRequest();
 					xhttp.onreadystatechange = function() {
 						if (this.readyState == 4) {
@@ -85,7 +90,7 @@
 					} 
 					xhttp.open("GET", file, true);
 					xhttp.send();
-					return;
+					return;*/
 				}
 			}
 			
@@ -108,6 +113,19 @@
 			    bindTriggers();
 			});
 			includeHTML();
+			
+			function loadGist(divId, url) {
+				$.ajax({
+				  url: url,
+				  dataType: 'jsonp',
+				  timeout: 1000,
+				  success: function (data) {
+					$(document.head).append('<link href="' + data.stylesheet + '" rel="stylesheet">')
+					$("#"+divId).html(data.div)
+				  }
+				})
+			}
+
 		</script>
 	</body>
 </html>
