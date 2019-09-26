@@ -142,6 +142,32 @@ The parameters can also be read with the equivalent "Get" functions.
 		<p>In this example we check for not walking (steering/forward velocity) and other states like crouch, jump and if it is grounded and how much time it is in this condition to set the idle boolean.</p>
 	</div>
 </div>
+
+<p>The other transition settings are:</p>
+<ul>
+    <li><b>Has Exit Time:</b> When enabled forces the transition to happens only at a certain point in the animation. Even if all transition conditions are met, it will delay the transition until that point. It should be used wisely as this delay may appears to the user as lack of responsiveness for the controller.</li>
+	<li><b>Exit Time:</b> The point in normalized animation clip length where the transition can occur.</li>
+	<li><b>Fixed Time:</b> When enabled the transition time is taken in seconds, otherwise it is taken in normalized animation time.</li>
+	<li><b>Transition Duration:</b> Duration of the transition.</li>
+	<li><b>Transition offset:</b> Normalized time of where to start the animation which is being transitioned to.</li>
+	<li><b>Interruption source:</b> How interruption should be handled, possible values are <code>None</code>, <code>Current State</code>, <code>Next State</code>, <code>Current then Next State</code> and <code>Next then Current State</code></li>
+</ul>
+
+<p>Finally, the states can contain a <i>single animation clip</i>, a <i>blend-tree of clips</i> or a <i>sub-state machine</i>.</p>
+
+<p>The default states are:</p>
+<ul>
+    <li><font color="#35d035"><b>Entry</b></font>: When entering the (sub)state machine, it starts in this state.</li>
+	<li><font color="#f09624"><b>Default</b></font>: When initializing, it starts in this state, there is always a unconditional transition from entry to the default state.</li>
+	<li><font color="#dc1616"><b>Exit</b></font>: Leaves from the (sub)state machine.</li>
+	<li><font color="#6fc5b6"><b>Any State</b></font>: A shortcut for creating transitions for all states. If all states can transit to a <i>X</i> state with the same condition, then one can use any <code>Any State -> X</code> as a shortcut, it also avoids cluttering the screen with transitions for each state. Transitions can only be crated from <i>Any State</i> to another state, not the inverse direction.</li>
+	<li><font color="#999999"><b>Common</b></font>: Normal user defined states.</li>
+</ul>
+
+<p>Sub-state machines are <i>"state machines inside a state"</i>, they can be recognized by the  hexagonal form, instead of the rectangular. They are useful to organize complex behaviors and also avoiding cluttering the screen. They have their own entry and exit and an additional state <code>Up(Layer)</code> which goes back to the main state machine.</p>
+
+<p>By double clicking in a sub-state it goes into the layer of this sub-state machine. The following figure show an example of our Idle sub-state machine</p>
+<img class="image fit" src="images/substatemachine.png"></img>
 <!-- -->
 state, sub state machine, transitions
 
