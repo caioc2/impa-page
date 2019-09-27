@@ -18,12 +18,12 @@
 
 <div class="spotlight">
 	<div class="image flush"> <img class="image 50%" src="images/rigging.png"></img></div>
-	<div class="inner">
+	<div class="inner2">
 		<p>On the <i>rig</i> tab you can specify the following properties:
 		<ul>
 			<li><b>Animation type:</b> <code>humanoid</code> for humanoids and <code>generic</code> for any other type of characters.</li>
 			<li><b>Avatar definition:</b> <code>no avatar</code>, <code>create from this model</code> and <code>copy from other avatar</code>. An avatar is an object that relates the bones animation to the mesh deformation or <i>muscles definition</i>. It is very useful for humanoid characters because it let one connect different shaped bodies to the same animation. For example, you could use the same walking animation for characters with different height. Another point is: you can't use an AnimatorController without having an avatar, even if you don't plan to use various characters with different shapes.</li>
-			<li><b>Root bone:</b> the root bone of the skeleton (only appears for generic types).</li>
+			<li><b>Root node:</b> the root bone of the skeleton (only appears for generic types).</li>
 			<li><b>Skin weights:</b> Bone/mesh interaction weights import mode.</li>
 		</ul>
 		</p>
@@ -68,7 +68,7 @@
 Other options are:
 <div class="spotlight">
 	<div class="image flush"> <img class="image 50%" src="images/rootmotion.png"></img></div>
-	<div class="inner">
+	<div class="inner2">
 		<ul>
 			<li><b>Curves:</b> Create additional parameter curve based on animation time, which can be used to control other effects/events.</li>
 			<li><b>Events:</b> Enable to control external events based on animation time.</li>
@@ -108,7 +108,7 @@ Other options are:
 	<div class="image flush">
 		<img class="image" src="images/animator.png"></img>
 	</div>
-	<div class="inner">
+	<div class="inner2">
 		<p>In order to create an animated character it is necessary to have an <i>Animator</i> Component in the desired gameObject. This component requires a <code>Controller</code> which is a state machine for the animation clips, and an <code>Avatar</code>, in our case the one created when selecting the <i>Rig</i> properties while importing the fbx file. The other parameters are <code>Update Mode</code> which controls how the animation updates are made (synchronous or asynchronous with the physics engine), and <code>Culling Mode</code> which controls if and how the animation is played when the gameObject is not (or partially) visible.
 		</p>
 	</div>
@@ -118,7 +118,7 @@ Other options are:
 
 <p>The animator controller is a <i>state machine</i> where the behavior of the character animation is defined. It is composed of parameters, states, and transitions.</p>
 
-<img class="image" src="images/animatorcontroller.png"></img>
+<img class="image fit" src="images/animatorcontroller.png"></img>
 
 <p>The parameters are created by the user on the "plus" sign, they can be of four types: boolean, float, integer or trigger (which is a boolean that resets its state when consumed by some transition). Those parameters can be used used to control both the transition conditions and the animation blending. They are accessed by their name and type from C#.</p>
 <div id="animatorSet"><script> loadGist("animatorSet",'https://gist.github.com/caioc2/6538f07e4d083c7ec046803cdfcb46a4.json');</script></div>
@@ -135,11 +135,11 @@ The parameters can also be read with the equivalent "Get" functions.
 	<div class="image flush">
 		<img class="image" src="images/transition.png"></img>
 	</div>
-	<div class="inner">
+	<div class="inner2">
 		<p>Transitions are descriptions of how and when to move between states. They can be created by right click on a source state and selecting <code>Make transition</code> and then clicking on the destination state.
 		The condition list is treated as a logic "and" among the selected variables and its values. For booleans it admits <code>true/false</code>, for floating point <code>less/greater than</code> and for integer <code>less/greater than, equal, not equal</code>. One can create the logic "or" by creating multiple transitions between the same two states. More complex conditions can also be handled by C# code and setting a single boolean as transition.</p>
 		<div id="complexc"><script>loadGist('complexc','https://gist.github.com/caioc2/7d4d917f82b5b67385c78b5fcd5322be.json');</script></div>
-		<p>In this example we check for not walking (steering/forward velocity) and other states like crouch, jump and if it is grounded and how much time it is in this condition to set the idle boolean.</p>
+		<p>In this example we check for not walking (steering/forward velocity) and other states like crouch, jump, if it is grounded and how much time it is in this condition to set the idle boolean.</p>
 	</div>
 </div>
 
@@ -168,7 +168,31 @@ The parameters can also be read with the equivalent "Get" functions.
 
 <p>By double clicking in a sub-state it goes into the layer of this sub-state machine. The following figure show an example of our Idle sub-state machine</p>
 <img class="image fit" src="images/substatemachine.png"></img>
+
+<h4>Blend Trees</h4>
+
+<img class="image fit" src="images/blendtree.png"></img>
+
+<p>Inside each state, one can have a single animation clip or various clips mixed by some parameters. This animation "mixer" is called <i>Blend Tree</i>. Each entry in a blend tree can be an animation clip or another blend tree. While a single blend tree can have at maximum two parameters, any parameters of its child blend trees will appear on the parent. Their parameters are matched with the state machine parameters by name and it accepts only floating points.</p>
+<p>In the left there is the inspector of a blend tree.</p>
+<div class="spotlight">
+	<div class="image flush">
+		<img class="image" src="images/btdetail.png"></img>
+	</div>
+	<div class="inner2">
+		<ul>
+			<li><b>Blend Type:</b> <code>1D</code>, a single parameter controls the blending of all clips in the blend tree. <code>2D</code>, two parameters are used to control the blending among clips. For 2D there are some variations as <code>2D Simple Directional</code>, <code>2D Freeform Directional</code> and <code>2D Freeform Cartesian</code>, any of them can have points freely positioned in the cartesian plane, the difference is how the interpolation of the clips are calculated.</li>
+			<li><b>Parameters:</b> The drop-down menu to select which parameter each coordinate represents.</li>
+			<li><b>Blending Diagram:</b> The graphical representation of the position of each clip and its influence.</li>
+			<li><b>Motion List:</b> The list of clips and child blend trees of this blend tree. Depending of which blend type is selected it shows the 1D or 2D coordinates of the clip, its play speed and mirroring option.</li>
+			<li><b>Compute Positions:</b> Auto-position the clips based on it's root motion. The computation can be based in the position or (angular) velocity of the root motion.</li>
+		</ul>
+	</div>
+</div>
+<br>
+<p>The range of the parameters are automatically computed from the position of the clips. When setting values outside this range, they are clipped.</p>
+
 <!-- -->
-state, sub state machine, transitions
+anim sync blend
 
 <h3>Physics, Colliders and Raycast</h3>
