@@ -5,7 +5,7 @@
 
 <h3>Introduction</h3>
 
-<p>Creating a playable character in Unity takes more work than just having a model and animation clips. In the next sections we are going to look at the basics of how to put together the model and its animation clips in a playable character starting from a <i>*.fbx</i> file containing the data.</p>
+<p>Creating a playable character in Unity takes more work than just having a model and animation clips. In the next sections we are going to look at the basics of how to put together the model and its animation clips in a playable character starting from a <i>*.fbx</i> file containing the data. Our character will be a dog with basic move-set: idle, walk, trot, run, jump and crouch.</p>
 
 
 <h3>Importing, Rigging & Avatar</h3>
@@ -14,7 +14,7 @@
 
 <img class="image fit" src="images/fbx.png"></img>
 
-<p>In our case we have a dog "kolly". As soon as you select the fbx the inspector window  will have the import settings.</p>
+<p>In our case we have a dog named "kolly". As soon as you select the fbx the inspector window  will have the import settings.</p>
 
 <div class="spotlight">
 	<div class="image flush"> <img class="image 50%" src="images/rigging.png"></img></div>
@@ -22,7 +22,7 @@
 		<p>On the <i>rig</i> tab you can specify the following properties:
 		<ul>
 			<li><b>Animation type:</b> <code>humanoid</code> for humanoids and <code>generic</code> for any other type of characters.</li>
-			<li><b>Avatar definition:</b> <code>no avatar</code>, <code>create from this model</code> and <code>copy from other avatar</code>. An avatar is an object that relates the bones animation to the mesh deformation or <i>muscles definition</i>. It is very useful for humanoid characters because it let one connect different shaped bodies to the same animation. For example, you could use the same walking animation for characters with different height. Another point is: you can't use an AnimatorController without having an avatar, even if you don't plan to use various characters with different shapes.</li>
+			<li><b>Avatar definition:</b> <code>no avatar</code>, <code>create from this model</code> and <code>copy from other avatar</code>. An avatar is an object that relates the bone's animation to the mesh deformation or <i>muscles definition</i>. It is very useful for humanoid characters because it let one connect different shaped bodies to the same animation. For example, you could use the same walking animation for characters with different height. Another point is: you can't use an AnimatorController without having an avatar, even if you don't plan to use various characters with different shapes.</li>
 			<li><b>Root node:</b> the root bone of the skeleton (only appears for generic types).</li>
 			<li><b>Skin weights:</b> Bone/mesh interaction weights import mode.</li>
 		</ul>
@@ -35,15 +35,15 @@
 
 <h3>Animation clips: cut, loop and cycle</h3>
 
-<p>The next tab after rig is the <i>Animation</i>. In this tab you can select to import or not animation clips, re-sample/compress its curves and edit animation clips properties.</p>
+<p>The next tab after rig is the <i>Animation</i>. In this tab you can select to import (or not) animation clips, re-sample/compress its curves and edit animation clips properties.</p>
 
 <img class="image fit" src="images/anim.png"></img>
 
 <p>Following the general properties, there is a list of animation clips. When selecting any of the clips and scrolling down there will be options of how to export this clip.
 <ul>
-	<li><b>Length bar:</b> here one can cut the clip. It is useful for various situations, for example when all clips are in the same take, you can cut and separate them and also when fine tunning the length for with a controller and blend trees.</li>
+	<li><b>Length bar:</b> here one can cut the clip. It is useful for various situations, for example when all clips are in the same take, you can cut and separate them and also when fine tunning its length to fit in a given a controller and blend tree.</li>
 	<li><b>Loop Time:</b> Enables the animation to loop.</li>
-	<li><b>Loop Pose:</b> For animations where the final pose is different from the initial pose, enabling this option smooths the animation loop between pose.</li>
+	<li><b>Loop Pose:</b> For animations where the final pose is different from the initial pose, enabling this option smooths the animation loop between poses.</li>
 	<li><b>Cycle Time:</b> Normalized starting time of the animation \( \in [0,1]\). Useful to synchronize clips in a blend tree like walking/running.</li>
 </ul>
 </p>
@@ -61,9 +61,9 @@
 <br>
 <h4>Root Motion Options</h4>
 
-<p>Animation clips where the root transform bone changes along the clip are considered to have root motion. Unity takes the delta between animation frames and apply this movement (rotations and translations) to the entire game object. For example an walking animation where the root bone starts at position \(p_0\) and ends at \(p_1 \neq p_0\) would have a motion in the direction \(p_1 - p_0\) making the gameObject whose it is attached to move in the scene.</p>
+<p>Animation clips where the root bone transform (position/rotation/scale) changes along the clip are considered to have <i>root motion</i>. Unity takes the delta between the animation frames and apply this movement (rotations, translations and scale) to the entire game object. For example an walking animation where the root bone starts at position \(p_0\) and ends at \(p_1 \neq p_0\) would have a motion in the direction \(p_1 - p_0\) making the gameObject whose it is attached to move in the scene.</p>
 
-<p>The options <code>Root Transform</code> control how the root motion should be interpreted by Unity. Enabling <code>Bake Into Pose</code> does not apply it to the gameObject. One can choose separately which movements (transforms) to apply or bake, they are <code>Rotation</code>, <code>Transform Y</code>(vertical move), <code>Transform XZ</code>(horizontal move).</p>
+<p>The options <code>Root Transform</code> control how the root motion should be interpreted by Unity. Enabling <code>Bake Into Pose</code> does not apply it to the gameObject but makes it part of the animation clip. One can choose separately which movements (transforms) to apply or bake, they are <code>Rotation</code>, <code>Transform Y</code>(vertical move), <code>Transform XZ</code>(horizontal move).</p>
 
 Other options are:
 <div class="spotlight">
@@ -101,7 +101,7 @@ Other options are:
 
 <img class="image fit" src="images/animwindow.png"></img>
 
-<p>One can open the animation window by double click in any animation or in the menu <code>Window > Animation > Animation (CTRL+6)</code>. To enable the preview of the selected key-frame it is necessary to, after having the window open, select the proper gameObject in the scene.</p>
+<p>The animation window can be opened by double click in any animation or in the menu <code>Window > Animation > Animation (CTRL+6)</code>. To enable the preview of the selected key-frame it is necessary to, after having the window open, select the proper gameObject in the scene.</p>
 
 <h3>Animator & Character Controller</h3>
 <div class="spotlight">
@@ -120,7 +120,7 @@ Other options are:
 
 <img class="image fit" src="images/animatorcontroller.png"></img>
 
-<p>The parameters are created by the user on the "plus" sign, they can be of four types: boolean, float, integer or trigger (which is a boolean that resets its state when consumed by some transition). Those parameters can be used used to control both the transition conditions and the animation blending. They are accessed by their name and type from C#.</p>
+<p>The parameters are created by the user on the "plus" sign, they can be of four types: boolean, float, integer or trigger (which is a boolean that resets its state when consumed by some transition). Those parameters can be used used to control both the transition conditions and the animation blending. They are accessed by their name and type from C#. The following example shows how to set state's machine variables.</p>
 <div id="animatorSet"><script> loadGist("animatorSet",'https://gist.github.com/caioc2/6538f07e4d083c7ec046803cdfcb46a4.json');</script></div>
 <p> where:
 <ul>
@@ -136,14 +136,14 @@ The parameters can also be read with the equivalent "Get" functions.
 		<img class="image" src="images/transition.png"></img>
 	</div>
 	<div class="inner2">
-		<p>Transitions are descriptions of how and when to move between states. They can be created by right click on a source state and selecting <code>Make transition</code> and then clicking on the destination state.
-		The condition list is treated as a logic "and" among the selected variables and its values. For booleans it admits <code>true/false</code>, for floating point <code>less/greater than</code> and for integer <code>less/greater than, equal, not equal</code>. One can create the logic "or" by creating multiple transitions between the same two states. More complex conditions can also be handled by C# code and setting a single boolean as transition.</p>
+		<p>Transitions are descriptions of how and when to move between states. They are represented by the arrows between states and can be created by right click on a source state, selecting <code>Make transition</code> and then clicking on the destination state.
+		The condition list is treated as a logic "and" among the selected variables and its values. For booleans it admits <code>true/false</code>, for floating point <code>less/greater than</code> and for integer <code>less/greater than, equal, not equal</code>. The logic operator "or" can be simulated by creating multiple transitions between the same two states. More complex conditions can also be handled by C# code and setting a single boolean as transition indicator afterward.</p>
 		<div id="complexc"><script>loadGist('complexc','https://gist.github.com/caioc2/7d4d917f82b5b67385c78b5fcd5322be.json');</script></div>
 		<p>In this example we check for not walking (steering/forward velocity) and other states like crouch, jump, if it is grounded and how much time it is in this condition to set the idle boolean.</p>
 	</div>
 </div>
 
-<p>The other transition settings are:</p>
+<p>The transition settings are:</p>
 <ul>
     <li><b>Has Exit Time:</b> When enabled forces the transition to happens only at a certain point in the animation. Even if all transition conditions are met, it will delay the transition until that point. It should be used wisely as this delay may appears to the user as lack of responsiveness for the controller.</li>
 	<li><b>Exit Time:</b> The point in normalized animation clip length where the transition can occur.</li>
@@ -153,9 +153,7 @@ The parameters can also be read with the equivalent "Get" functions.
 	<li><b>Interruption source:</b> How interruption should be handled, possible values are <code>None</code>, <code>Current State</code>, <code>Next State</code>, <code>Current then Next State</code> and <code>Next then Current State</code></li>
 </ul>
 
-<p>Finally, the states can contain a <i>single animation clip</i>, a <i>blend-tree of clips</i> or a <i>sub-state machine</i>.</p>
-
-<p>The default states are:</p>
+<p>Finally, the states of the machine can contain a <i>single animation clip</i>, a <i>blend-tree of clips</i> or a <i>sub-state machine</i>. They are represented by the rectangular geometry and their color indicates the type of the state. They are:</p>
 <ul>
     <li><font color="#35d035"><b>Entry</b></font>: When entering the (sub)state machine, it starts in this state.</li>
 	<li><font color="#f09624"><b>Default</b></font>: When initializing, it starts in this state, there is always a unconditional transition from entry to the default state.</li>
@@ -164,9 +162,9 @@ The parameters can also be read with the equivalent "Get" functions.
 	<li><font color="#999999"><b>Common</b></font>: Normal user defined states.</li>
 </ul>
 
-<p>Sub-state machines are <i>"state machines inside a state"</i>, they can be recognized by the  hexagonal form, instead of the rectangular. They are useful to organize complex behaviors and also avoiding cluttering the screen. They have their own entry and exit and an additional state <code>Up(Layer)</code> which goes back to the main state machine.</p>
+<p>Sub-state machines are <i>"state machines inside a state"</i>, they can be recognized by the  hexagonal form, instead of the rectangular. They are useful to organize complex behaviors and also avoiding cluttering the screen. They have their own entry and exit and an additional state <code>Up(Layer)</code> which goes back to the main state machine. Here we organized our Idle animation clips inside a sub-state machine.</p>
 
-<p>By double clicking in a sub-state it goes into the layer of this sub-state machine. The following figure show an example of our Idle sub-state machine</p>
+<p>By double clicking in a sub-state it goes into its own layer. The following figure show our Idle sub-state machine.</p>
 <img class="image fit" src="images/substatemachine.png"></img>
 
 <h4>Blend Trees</h4>
@@ -192,7 +190,21 @@ The parameters can also be read with the equivalent "Get" functions.
 <br>
 <p>The range of the parameters are automatically computed from the position of the clips. When setting values outside this range, they are clipped.</p>
 
-<!-- -->
-anim sync blend
+<p>When using blend trees, besides right positioning the clips in the 1D/2D graph, it's important to have the clips which are controlled by the same parameter to be synchronized in its length and cycle. Otherwise the blend in-between motions can be awkward. One common example where this behavior can happen is when blending between mirrored animations like "walking left" mirrored to "walking right" or transitions between "walk" and "run".</p>
 
+<div style="margin: 3rem;">
+	<div class="image 50%" style="text-align: center; float: left;">
+		Synchronized legs with correct length & cycle.<br>
+		<div class="video-container">
+		<video width="428" height="334" src="images/sync.webm" frameborder="0" controls></video>
+		</div>
+	</div>
+	<div class="image 50%" style="text-align: center;">
+		Unsynchronized legs with incorrect length & cycle.<br>
+		<div class="video-container">
+		<video width="428" height="334" src="images/unsync.webm" frameborder="0" controls></video>
+		</div>
+	</div>
+</div>
+<br>
 <h3>Physics, Colliders and Raycast</h3>

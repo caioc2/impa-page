@@ -9,7 +9,7 @@ function includeHTML(prefix) {
 			MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 			$("html, body").scrollTop(($('#content-sec').offset().top));
 			if(prefix !== undefined) {
-				$('#html-content img').each(function(){ 
+				$('#html-content img, video').each(function(){ 
 					src = $(this).attr('src');
 					$(this).attr('src', prefix+src);
 				});

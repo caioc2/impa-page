@@ -34,7 +34,6 @@
 		navbar.classList.remove("sticky");
 	  }
 	}
-	$( document ).ready(function() {
-		bindTriggers();
-	});
+	
+	$('html').click( function() { $(".dl-trigger").trigger("customClose");});
 </script>
