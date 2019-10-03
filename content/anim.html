@@ -207,4 +207,45 @@ The parameters can also be read with the equivalent "Get" functions.
 	</div>
 </div>
 <br>
+
 <h3>Physics, Colliders and Raycast</h3>
+
+<p>Interacting with the environment in a meaningful way requires our dog to behave similar as a physical body. For example not occupying the same space of another body at the same time or trespassing walls, jumping and falling according with gravity etc. Those behaviors are accomplished by using the <i>physics engine</i> to handle the forces and velocities acting in a body and <i>colliders</i> to detect when objects are intersecting each other. Together with them there are the <i>raycast</i> which provides a way to detect intersections with basic geometries (rays, boxes, spheres, capsules, etc) along a given direction.</p>
+
+<p>One of the components that makes a gameObject interact with the physics engine is the <code>RigidBody</code>, as the name suggests, it is a non-deformable body. Here, being non-deformable means the physics engine does not change the body form (mesh), but its position and rotation. By any means, this does not prevent any other source of changing the mesh vertices and transformation. The following parameters can be controlled in the collider:</p>
+
+<div class="spotlight">
+	<div class="image flush">
+		<img class="image" src="images/rigidbody.png"></img>
+	</div>
+	<div class="inner2">
+		<ul>
+			<li><b>Mass:</b> The body mass.</li>
+			<li><b>Drag:</b> The air resistance against linear movement forces.</li>
+			<li><b>Angular Drag:</b> The air resistance against angular movement torque.</li>
+			<li><b>Gravity:</b> Enable/disable gravity effect over the body.</li>
+			<li><b>Is Kinematic:</b> When enabled it disables the effect of the physics engine over the object.</li>
+			<li><b>Interpolate:</b> Defines how the movement between frames is interpolated, <code>none</code>, <code>interpolate</code> based on previous frame,  <code>extrapolate</code> based on an estimate of the next frame.</li>
+		</ul>
+	</div>
+</div>
+
+<ul>
+<li><b>Collision Detect: </b><code>Discrete</code> per frame detection, <code>Continuous</code> detect collisions against static objects between frames, prevent fast moving objects which in the exact frame time are not colliding but in the time between frames would collide, <code>Continuous Dynamic</code> same as continuous but also takes in account dynamic objects in the scene, <code>Continuous Speculative</code> same as dynamic but using a different method to estimate the collision, usually cheaper than dynamic.</li>
+<li><b>Constraints:</b> Individual selection of axis where translation and/or rotation cannot be changed by the physics engine (frozen).</li>
+</ul>
+<br>
+
+<p>The next component is the collider. Unity offer various types of colliders which varies in its geometries, here our dog uses a simple </i>BoxCollider</i>. The next image shows the dog with its box, superposed with the inspector of the BoxCollider.
+</p>
+<img class="image fit" src="images/collider.png"></img>
+
+<p>The collider properties are:</p>
+<ul>
+   <li><b>Is Trigger:</b> When enabled it is ignored by the physics engine and it's only used to trigger events. For example it could be used to check when a projectile entered a given volume without interacting with it.</li>
+   <li><b>Material:</b> The physical material of the object, it affects for example the friction, if a collision is elastic or not etc. Some default materials are available with the Unity Standard Assets.</li>
+   <li><b>Center:</b> Center of the box collider.</li>
+   <li><b>Size:</b> Extents of the box.</li>
+</ul>
+
+<p>One important detail is the box center and size are in the object coordinates. When using them from C# to check distances its important to transform it to world coordinates.</p>
