@@ -212,7 +212,7 @@ The parameters can also be read with the equivalent "Get" functions.
 
 <p>Interacting with the environment in a meaningful way requires our dog to behave similar as a physical body. For example not occupying the same space of another body at the same time or trespassing walls, jumping and falling according with gravity etc. Those behaviors are accomplished by using the <i>physics engine</i> to handle the forces and velocities acting in a body and <i>colliders</i> to detect when objects are intersecting each other. Together with them there are the <i>raycast</i> which provides a way to detect intersections with basic geometries (rays, boxes, spheres, capsules, etc) along a given direction.</p>
 
-<p>One of the components that makes a gameObject interact with the physics engine is the <code>RigidBody</code>, as the name suggests, it is a non-deformable body. Here, being non-deformable means the physics engine does not change the body form (mesh), but its position and rotation. By any means, this does not prevent any other source of changing the mesh vertices and transformation. The following parameters can be controlled in the collider:</p>
+<p>One of the components that makes a gameObject interact with the physics engine is the <code>RigidBody</code>, as the name suggests, it is a non-deformable body. Here, being non-deformable means the physics engine does not change the body form (mesh), but its position and rotation. By any means, this does not prevent any other source of changing the mesh vertices and transformation. The following parameters can be controlled in the RigidBody component:</p>
 
 <div class="spotlight">
 	<div class="image flush">
@@ -244,8 +244,12 @@ The parameters can also be read with the equivalent "Get" functions.
 <ul>
    <li><b>Is Trigger:</b> When enabled it is ignored by the physics engine and it's only used to trigger events. For example it could be used to check when a projectile entered a given volume without interacting with it.</li>
    <li><b>Material:</b> The physical material of the object, it affects for example the friction, if a collision is elastic or not etc. Some default materials are available with the Unity Standard Assets.</li>
-   <li><b>Center:</b> Center of the box collider.</li>
-   <li><b>Size:</b> Extents of the box.</li>
+   <li><b>Center:</b> Center of the box collider in object space coordinates.</li>
+   <li><b>Size:</b> Extents of the box in object space coordinates.</li>
 </ul>
 
-<p>One important detail is the box center and size are in the object coordinates. When using them from C# to check distances its important to transform it to world coordinates.</p>
+<p>Next we have the ray casting tools. It can be used in various ways, but the most common for character controller is in a "sensor like" fashion. While we call it ray cast, you can cast spheres, capsules, lines and boxes along a direction too. One good example of usage is checking if the character have its feet grounded. You can simple cast a ray starting a little above its feet and check if it hits the ground within a distance \(\delta\). Inside a C# script it would look like:</p>
+
+<div id="raycast"><script>loadGist('raycast','https://gist.github.com/caioc2/7c0703ac3a46054b1b881e0bd353dca5.json')</script></div>
+
+<p>The basic syntax is <code>ray origin</code>, <code>direction</code>, <code>hit information</code>, <code>maximum distance</code> returning true if any object was hit within the maximum distance. It can also accept other parameters as if it should trigger actions, which layers it should check against and for other geometries (box, shpere, etc) their respective parameters which can be found in the <a href="https://docs.unity3d.com/ScriptReference/Physics.html">Unity Scripting Reference</a></p>
