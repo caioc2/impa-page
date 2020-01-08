@@ -1,0 +1,51 @@
+<header class="mini">
+<h2>DogBot</h2>
+<p>Experimenting reinforcement learning on a playable character</p>
+</header>
+
+
+idea - high level character control
+idea - basic learned actions controlled by a bigger "brain"
+basic input -  forward, backward, left, right, jump crouch
+
+training
+	- collect pink objects
+		- binary reward {0,1}
+	- reach stand pink pads
+		- inside time reward
+	- visual observation
+	- forward bias
+	- continuous action space (-1,1)
+		- network output scaling
+	- discrete action space {backward, stand, walk, trot, run}, {left, straight, right}
+		- forward bias on reward
+	- puppo like
+		- high level discrete actions
+		- vector observations of direction, distance, borders and velocity
+	- environment
+		- difficult
+			- # items
+			- size
+			- possible actions
+	- reward
+		- shape behavior
+			- binary
+			- increasing
+			- time penalty
+			- action penalty
+		- forward bias
+		- difficult to attain the desired end result
+	- result
+		- puppo like
+			- works good, "complete" information of ambient
+		- visual observation
+			- partial information
+			- movement tied to vision, lack of attention
+			- independent action branches, hard to train together
+			- nonoptimal behavior, forward overfit
+		- generalization
+			- object shape (because of color?)
+			- area size
+			
+			
+	
