@@ -3,13 +3,15 @@
 <p>Experimenting reinforcement learning on a playable character</p>
 </header>
 
-<h3>High-Level character controll<h3>
+<h3>High-Level character control</h3>
 
-<p>Reinforcement learning have been a trending topic recently with the Deep Learning techniques. Various interesting applications have been made from playing games (Atari, Go, StarCraft, etc) to controlling torque-actuators for motion control in robotic simulations (biped run, robotic hand solving rubik's cube, etc). Here we want to experiment with high level controls of a character, which already have its animations and controller, to do simple tasks like collect or fetch an object.
+<p>Reinforcement learning have been a trending topic recently with the Deep Learning techniques. Various interesting applications have been made from playing games (Atari, Go, StarCraft, etc) to controlling torque-actuators for motion control in robotic simulations (biped run, robotic hand solving Rubik's cube, etc). Here we want to experiment with high level controls of a character, which already have its animations and controller, to do simple tasks like collect or fetch an object.
 </p>
 
-<p>Our choosen character is a dog (we call it DogBot for now). It can stand, walk, trot, run, jump and crouch and we train it to choose between those actions to accomplish a desired task.
+<p>Our chosen character is a dog (we will call it DogBot for now). It can stand, walk, trot, run, jump and crouch. We train it to select between those actions at each instant \(t_i\) to accomplish a desired task. More details on the basic animations and controls can be found <a href="anim.html">here</a>.
 </p>
+
+<p>With this setup, our later goal is to have some basic trained behaviors which can be used hierarchically by a higher level "brain" (either learned or heuristic based) to interact with players in a virtual environment.</p>
 
 
 
