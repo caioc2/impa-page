@@ -11,11 +11,11 @@
 <p>Our chosen character is a dog (we will call it DogBot for now). It can stand, walk, trot, run, jump and crouch. We train it to select between those actions at each instant \(t_i\) to accomplish a desired task. More details on the basic animations and controls can be found <a href="anim.html">here</a>.
 </p>
 
-<p>With this setup, our later goal is to have some basic trained behaviors which can be used by a higher level "brain" (either learned or heuristic based) to interact with players in a virtual environment. This approach resembles a hierarchical learning spliting complex behaviors into a set of simple behaviors, but instead of learning every single component, it can use heuristic behaviors and traditional animation and character controller together with learning.</p>
+<p>With this setup, our later goal is to have some basic trained behaviors which can be used by a higher level "brain" (either learned or heuristic based) to interact with players in a virtual environment. This approach resembles a hierarchical learning splitting complex behaviors into a set of simple behaviors, but instead of learning every single component, it can use heuristic behaviors and traditional animation and character controller together with learning.</p>
 
 <h3>Environment</h3>
 
-<p>Our enviroment is a Unity scene where our character can act and interact with objects. It consists of a square gray plane \(110\times 110\)m with a white border of \(1\)m diameter, which <i>visualy</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it we consider as it reached a final state (game over) leading to a reset or restart.</p>
+<p>Our environment is a Unity scene where our character can act and interact with objects. It consists of a square gray plane \(110\times 110\)m with a white border of \(1\)m diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it we consider as it reached a final state (game over) leading to a reset or restart.</p>
 
 <p>Inside our training area we can have the following objects:
 <ul>
@@ -27,16 +27,16 @@
 	</li>
 	<li>Standing pad: a painted circle in the ground delimiting a region with \(5\)m diameter.</li>
 </ul>
-One or many of these objects can be found in a specific scenarion for training. We will specify their number, positioning and any other relevant detail for each training section when relevant.
+One or many of these objects can be found in a specific scenario for training. We will specify their number, positioning and any other relevant detail for each training section when relevant.
 </p>
 
-<p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is downsampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the downsampled input image. One important aspect of the enviroment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by another player. We can create complex behaviors using simple geometries for our agent while complex geometries and totaly different context is seen by the player and therefore being able to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a humam being).</p>
+<p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is down-sampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the down-sampled input image. One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by another player. We can create complex behaviors using simple geometries for our agent while complex geometries and totally different context is seen by the player and therefore being able to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
 
 <h3>Tasks</h3>
 
-<p>The agent task can be put as a mobility task, given a stimulus it needs to locomote to a target point. Inside this general task we have our specialized tasks:
+<p>The agent task can be put as a mobility task, given a stimulus it needs to loco-mote to a target point. Inside this general task we have our specialized tasks:
 <ul>
-	<li>Collecting an object: reach the object position, when the agent colides with it the object is removed from the scene, i.e., collected.</li>
+	<li>Collecting an object: reach the object position, when the agent collides with it the object is removed from the scene, i.e., collected.</li>
 	<li>Reach and stay: reach the standing pad and stay inside it.</li>
 	<li>Fetch: reach the object and go back to its initial position. It also can be thought as reaching two objects, for example, the stick and then who threw it.</li>
 </ul>
@@ -46,7 +46,7 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h3>Agent</h3>
 
-<p>We breifly described which actions or agent (DogBot) can perform with its standard animations and character controller. Yet the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
+<p>We briefly described which actions or agent (DogBot) can perform with its standard animations and character controller. Yet the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
 <p>Before entering the encoding itself it's important to distinguish between the kinds of observations in a higher level:
 	<ul>
 		<li>Completely observable: all information from the environment is available.</li>
@@ -67,7 +67,7 @@ Imagine we want our agent to fetch a stick which is behind him, using informatio
 			<li>TODO</li>
 		</ul>
 	</li>
-	<li>Visual observation: partially observable, downsampled from the original rendered image, 3rd person camera-like.
+	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd person camera-like.
 		<ul>
 			<li>2D image:  matrix \(V_{84\times 84}\)</li>
 		</ul>
@@ -75,7 +75,7 @@ Imagine we want our agent to fetch a stick which is behind him, using informatio
 </ul>
 </p>
 
-<p>It is important to note that while each of our encoding sits on a different category, one could have a mix of both observations. Also, being completely or partially observable is not bind to the kind of encoding but the informations passed. For example, in a 2D chess game, if our observation encoding where a view-from-top of the entire board, it would be completely observable.</p>
+<p>It is important to note that while each of our encoding sits on a different category, one could have a mix of both observations. Also, being completely or partially observable is not bind to the kind of encoding but the informations passed. For example, in a 2D chess game, if our observation encoding where a view-from-top of the entire board, it would be completely observable. Going back to our own example, if we add obstacles in the vector observation case (without adding extra information), it would become partially observable.</p>
 
 TODO: action encoding
 
