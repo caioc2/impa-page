@@ -8,33 +8,50 @@
 <p>Reinforcement learning have been a trending topic recently with the Deep Learning techniques. Various interesting applications have been made from playing games (Atari, Go, StarCraft, etc) to controlling torque-actuators for motion control in robotic simulations (biped run, robotic hand solving Rubik's cube, etc). Here we want to experiment with high level controls of a character, which already have its animations and controller, to do simple tasks like collect or fetch an object.
 </p>
 
-<p>Our chosen character is a dog (we will call it DogBot for now). It can stand, walk, trot, run, jump and crouch. We train it to select between those actions at each instant \(t_i\) to accomplish a desired task. More details on the basic animations and controls can be found <a href="anim.html">here</a>.
+<p>Our chosen character is a dog (we will call it DogBot for now). It can stand, walk, trot, run, jump and crouch. We train it to select between those actions at each instant \(t_i\) to accomplish a desired task. More details on the basic animations and controls setup can be found <a href="anim.html">here</a>.
 </p>
 
 <p>With this setup, our later goal is to have some basic trained behaviors which can be used by a higher level "brain" (either learned or heuristic based) to interact with players in a virtual environment. This approach resembles a hierarchical learning splitting complex behaviors into a set of simple behaviors, but instead of learning every single component, it can use heuristic behaviors and traditional animation and character controller together with learning.</p>
 
 <h3>Environment</h3>
 
-<p>Our environment is a Unity scene where our character can act and interact with objects. It consists of a square gray plane \(110\times 110\)m with a white border of \(1\)m diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it we consider as it reached a final state (game over) leading to a reset or restart.</p>
+<p>Our environment is a Unity scene where our character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it we consider as it reached a final state (game over) leading to a reset or restart.</p>
 
 <p>Inside our training area we can have the following objects:
 <ul>
 	<li> Collectibles:
 		<ul>
-			<li>(Simple geometry) Cubes with \(1\)m edges</li>
-			<li>(Complex geometry) Coins with \(1.5\)m diameter</li>
+			<li>(Simple geometry) Cubes with \(1 m\) edges</li>
+			<li>(Complex geometry) Coins with \(1.5 m\) diameter</li>
 		</ul>
 	</li>
-	<li>Standing pad: a painted circle in the ground delimiting a region with \(5\)m diameter.</li>
+	<li>Standing pad: a painted circle on the ground delimiting a region with \(5 m\) diameter.</li>
 </ul>
 One or many of these objects can be found in a specific scenario for training. We will specify their number, positioning and any other relevant detail for each training section when relevant.
 </p>
 
-<p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is down-sampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the down-sampled input image. One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by another player. We can create complex behaviors using simple geometries for our agent while complex geometries and totally different context is seen by the player and therefore being able to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
+<p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is down-sampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the down-sampled input image.</p>
+
+</p> One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by a player. We can create complex behaviors using simple geometries for our agent while complex geometries and totally different context is seen by the player. Therefore we are able to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
+
+<p>A characteristic of any environment is how observable it is, and it's intrinsic related to how the agent senses its surrounding. A high level differentiation with respect to that is:
+	<ul>
+		<li>Completely observable: all information from the environment is available.</li>
+		<li>Partially observable: some of the information from the environment is available.</li>
+	</ul>
+One example as where we call it <i>completely observable</i> is: </p>
+<p>
+<blockquote>
+Assuming our previous environment without obstacles and with a single collectible object as goal. If we set our observations as the agent position and direction, and the direction to target and its position. Here we have a completely observable configuration in the sense that independent of the agent state (position and direction) it always have complete information  of itself and the target to complete its goal. Indeed one could even write a heuristic to solve this simple task.
+</blockquote>
+</p>
+
+<p>In the other hand, following the same example, if we use visual information, (i.e, a 2D image from our agent's vision cone) instead of the aforementioned observations, depending on where the agent/target is, it may be partially or not visible to each other at all. In this case the sensing of our agent varies depending of its state and it is always partial. This differentiation of how the environment is perceived and how much information is available per observation dictates the performance of learning. 
+</p>
 
 <h3>Tasks</h3>
 
-<p>The agent task can be put as a mobility task, given a stimulus it needs to loco-mote to a target point. Inside this general task we have our specialized tasks:
+<p>The agent task can be put as a mobility task, given a stimulus it needs to move toward the target point. Inside this general task we have our specialized tasks:
 <ul>
 	<li>Collecting an object: reach the object position, when the agent collides with it the object is removed from the scene, i.e., collected.</li>
 	<li>Reach and stay: reach the standing pad and stay inside it.</li>
@@ -46,20 +63,9 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h3>Agent</h3>
 
-<p>We briefly described which actions or agent (DogBot) can perform with its standard animations and character controller. Yet the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
-<p>Before entering the encoding itself it's important to distinguish between the kinds of observations in a higher level:
-	<ul>
-		<li>Completely observable: all information from the environment is available.</li>
-		<li>Partially observable: some of the information from the environment is available.</li>
-	</ul>
-One example as why we call it <i>completely observable</i> is: </p>
-<cite>
-Imagine we want our agent to fetch a stick which is behind him, using information such as "direction to the target" or "target position" tells our agent it is behind, even if it is not inside its vision field, as a result, no matter where the stick is, this kind of feature  always gives the agent precise information.
-</cite>
+<p>We briefly described which actions our agent (DogBot) can perform with its standard animations and character controller. Yet the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
 
-<p>In the other hand, following the same example, if we use only the visual observation of what the agent is seeing (a 2D image from its vision cone), depending on where the stick is partial or no relevant information will be available.
-</p>
-<p>Now we have the two encoding for our observations:
+<p>We used two encoding for our observations with different paradigms:
 <ul>
 	<li>Vector observation: complete observable, hand-crafted features.
 		<ul>
@@ -67,17 +73,37 @@ Imagine we want our agent to fetch a stick which is behind him, using informatio
 			<li>TODO</li>
 		</ul>
 	</li>
-	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd person camera-like.
+	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd person-like camera.
 		<ul>
-			<li>2D image:  matrix \(V_{84\times 84}\)</li>
+			<li>2D image:  matrix \(I_{84\times 84}(r,g,b)\)</li>
 		</ul>
 	</li>
 </ul>
 </p>
 
-<p>It is important to note that while each of our encoding sits on a different category, one could have a mix of both observations. Also, being completely or partially observable is not bind to the kind of encoding but the informations passed. For example, in a 2D chess game, if our observation encoding where a view-from-top of the entire board, it would be completely observable. Going back to our own example, if we add obstacles in the vector observation case (without adding extra information), it would become partially observable.</p>
+<p>Note that while each of our encoding sits on a different category, one could have a mix of both observations. Also, being completely or partially observable is not bind to the kind of encoding but the information passed. For example, in a 2D chess game, if our observation encoding where a view-from-top of the entire board, it would be completely observable.</p>
 
-TODO: action encoding
+<p>Two action encoding schemes were used:
+<ul>
+	<li>Continuous action space:
+		<ul>
+			<li>Forward and backward movement: \(\in [-1,1]\)</li>
+			<li>Steering left and right: \(\in [-1,1]\)</li>
+			<li>Jump: \(j \in [-1,1], \quad j > \text{threshold}_j\)</li>
+			<li>Crouch: \(c \in [-1,1], \quad c > \text{threshold}_c\)</li>
+		</ul>
+	</li>
+	<li>Discrete action space:
+		<ul>
+			<li>Forward and backward movement: \(\{\text{backward, none, walk, trot, run}\}\)</li>
+			<li>Steering: \(\{\text{left, none, right}\}\)</li>
+			<li>Jump: \(\{\text{true, false}\}\)</li>
+			<li>Crouch: \(\{\text{true, false}\}\)</li>
+		</ul>
+	</li>
+</ul>
+Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, which is not possible at the same time, the Jump action has priority over the crouch.
+</p>
 
 <h3>Training</h3>
 
@@ -85,7 +111,7 @@ TODO: mlagents setup etc
 
 <h4>Experiments</h4>
 
-The first is an implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with informations such as, speed, direction, direction to target and others are used to describe the scene.
+The first is an implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene.
 
 
 
