@@ -69,8 +69,13 @@ While these can all be cast as essentially the same task, their difference comes
 <ul>
 	<li>Vector observation: complete observable, hand-crafted features.
 		<ul>
-			<li>Direction to target: \( (x,y,z)\)</li>
-			<li>TODO</li>
+			<li>Normalized direction to target: \( d_{\text{target}} = (x,y,z), \quad \lVert d_{\text{target}} \rVert_{2} = 1\)</li>
+			<li>Normalized distance to border: \(d_{\text{border}} = (x,y)\), \(\lVert d_{\text{border}} \rVert_{\infty} < 1 \rightarrow \text{inside}, \quad \lVert d_{\text{border}}\rVert_{\infty} \geq 1 \rightarrow \text{outside}\)</li>
+			<li>Linear velocity: \( v_{\text{linear}} = (x,y,z) \text{m/s}\)</li>
+			<li>Angular velocity: \( v_{\text{angular}} = (x, y, z) \text{rad/s}\)</li>
+			<li>Normalized agent forward direction: \( d_{\text{forward}} = (x, y, z), \quad \lVert d_{\text{forward}} \rVert_{2} = 1\)</li>
+			<li>Normalized agent up direction: \( d_{\text{up}} = (x, y, z), \quad \lVert d_{\text{up}} \rVert_{2} = 1\)</li>
+			<li>Agent local position (agent's position referent to its transformation matrix): \( p_{\text{local}} = (x,y,z) \)
 		</ul>
 	</li>
 	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd person-like camera.
@@ -78,10 +83,15 @@ While these can all be cast as essentially the same task, their difference comes
 			<li>2D image:  matrix \(I_{84\times 84}(r,g,b)\)</li>
 		</ul>
 	</li>
+	<li>TODO: new visual observation with direction to target look at</li>
 </ul>
 </p>
 
-<p>Note that while each of our encoding sits on a different category, one could have a mix of both observations. Also, being completely or partially observable is not bind to the kind of encoding but the information passed. For example, in a 2D chess game, if our observation encoding where a view-from-top of the entire board, it would be completely observable.</p>
+<p><i>Note that being completely or partially observable is not bind to the kind of encoding but the information passed. For example, in a 2D chess game, if our observation encoding where a view-from-top 2D image of the entire board, it would be completely observable.</i></p>
+
+<p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First we added the <i>Normalized distance to the border</i>, because we have an unbounded environment, last we removed all the joint angles and torque information. Puppo works on a low-level control of the joint angles and torque while our agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
+
+
 
 <p>Two action encoding schemes were used:
 <ul>
