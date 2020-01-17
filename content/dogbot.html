@@ -34,11 +34,12 @@ One or many of these objects can be found in a specific scenario for training. T
 
 </p> One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by a player. Complex behaviors can be created using simple geometries for the agent while complex geometries and totally different context is seen by the player. Therefore, it enables one to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
 
-<p>A characteristic of any environment is how observable it is, and it's intrinsic related to how the agent senses its surrounding. A high level differentiation with respect to that is:
+<p>A form of classifying an environment is relative to how observable it is:
 	<ul>
 		<li>Completely observable: all information from the environment is available.</li>
 		<li>Partially observable: some of the information from the environment is available.</li>
 	</ul>
+It's intrinsic related to how the agent senses its surrounding and has a broad impact in the agent's performance.
 One example as where it is called <i>completely observable</i>: </p>
 <p>
 <blockquote>
@@ -63,9 +64,13 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h3>Agent</h3>
 
-<p>The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet, the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
+<p>The agent is an entity abstraction which is itself a <i>behavior policy</i>. Nevertheless when referred without a specific policy it can be imagined as an entity with sensors (observations) and actuators (actions) where a policy can be plugged in, in programming it would be equivalent to an <i>interface</i>. The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet, the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
 
-<p>The encoding used for the observations follow different paradigms. They are:
+<h4>Observations</h4>
+
+<p>An observation is any kind of sensing of the agent and environment state. Those need to be encoded by numbers that serves as input to the behavior policy which output actions.</p>
+
+<p>The observations and its encoding are the following:
 <ul>
 	<li>Vector observation: complete observable, hand-crafted features.
 		<ul>
@@ -110,8 +115,8 @@ While these can all be cast as essentially the same task, their difference comes
 		<ul>
 			<li>Forward and backward movement: \(\in [-1,1]\)</li>
 			<li>Steering left and right: \(\in [-1,1]\)</li>
-			<li>Jump: \(j \in [-1,1], \quad j > \text{threshold}_j\)</li>
-			<li>Crouch: \(c \in [-1,1], \quad c > \text{threshold}_c\)</li>
+			<li>Jump: \(j \in [-1,1], \quad j > j_0\)</li>
+			<li>Crouch: \(c \in [-1,1], \quad c > c_0\)</li>
 		</ul>
 	</li>
 	<li>Discrete action space:
@@ -125,6 +130,8 @@ While these can all be cast as essentially the same task, their difference comes
 </ul>
 Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, despite being separated branches, priority is given to Jump action over the Crouch as it is not physically possible to do both at the same time.
 </p>
+
+<h4>Reward</h4>
 
 <h3>Training</h3>
 
