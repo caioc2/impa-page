@@ -15,7 +15,7 @@
 
 <h3>Environment</h3>
 
-<p>The environment is a Unity scene where the character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it, it reaches a final state (game over) leading to a reset or restart.</p>
+<p>The environment is a Unity scene where the character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it a final state (game over) is reached leading to a reset or restart.</p>
 
 <p>The training area can contain the following objects:
 <ul>
@@ -42,7 +42,7 @@ One or many of these objects can be found in a specific scenario for training. T
 One example as where it is called <i>completely observable</i>: </p>
 <p>
 <blockquote>
-Assuming the previous environment without obstacles and with a single collectible object as goal. If the observations are set as the agent position and direction, and the direction to target and its position. It is a completely observable configuration in the sense that independent of the agent state (position and direction) it always have complete information  of itself and the target to complete its goal. Indeed one could even write a heuristic to solve this simple task.
+Assuming the previous environment without obstacles and with a single collectible object as goal. If the observations are set as the agent position and direction, the direction to target and target position. It is a completely observable configuration in the sense that independent of the agent state (position and direction) it always have complete information  of itself and the target to complete its goal. Indeed one could even write a heuristic to solve this simple task.
 </blockquote>
 </p>
 
@@ -63,9 +63,9 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h3>Agent</h3>
 
-<p>The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
+<p>The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet, the most important is what it observes to take actions and how both the observations and actions are encoded.</p>
 
-<p>Two encoding are used for the observations with different paradigms:
+<p>The encoding used for the observations follow different paradigms. They are:
 <ul>
 	<li>Vector observation: complete observable, hand-crafted features.
 		<ul>
@@ -78,12 +78,17 @@ While these can all be cast as essentially the same task, their difference comes
 			<li>Agent local position (agent's position referent to its transformation matrix): \( p_{\text{local}} = (x,y,z) \)
 		</ul>
 	</li>
-	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd-person-like camera.
+	<li>Visual observation: partially observable, down-sampled from the original rendered image, 3rd-person-like camera aligned with agent forward direction.
 		<ul>
 			<li>2D image:  matrix \(I_{84\times 84}(r,g,b)\)</li>
 		</ul>
 	</li>
-	<li>TODO: new visual observation with direction to target look at</li>
+	<li>Mixed observation: partially observable, down-sampled from the original rendered image, 3rd-person-like camera possible unaligned with agent forward direction.
+		<ul>
+			<li>2D image:  matrix \(I_{84\times 84}(r,g,b)\)</li>
+			<li>Local normalized camera forward direction: \( d_{\text{camera}} = (x,y,z), \quad \lVert d_{\text{target}} \rVert_{2} = 1\)
+		</ul>
+	</li>
 </ul>
 </p>
 
@@ -91,9 +96,11 @@ While these can all be cast as essentially the same task, their difference comes
 
 <p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information was removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
 
-<p>Next, the visual encoding consists of \( 84\times 84 \times 3 = 21168\) numbers, in a 2D RGB image. This image is the direct rendering of the agent's view. This kind of observation is interesting for many real world applications. yet it is much more complex and less complete than the first encoding in \(20\) numbers because only partial information can be inferred from it. In spite of that, it can be more general in some aspects. For example if a variable number of collectibles is admitted in the environment, the first encoding would not be able to handle that variation, but using a 2D image the agent could (because the image is already a partial view of the environment).</p>
+<p>Next, the visual encoding consists of \( 84\times 84 \times 3 = 21168\) numbers (floats), in a 2D RGB image. This image is the direct rendering of the agent's view. This kind of observation is interesting for many real world applications. yet it is much more complex and less complete than the first encoding in \(20\) numbers because only partial information can be inferred from it. In spite of that, it can be more general in some aspects. For example if a variable number of collectibles is admitted in the environment, the first encoding would not be able to handle that variation, but using a 2D image the agent could deal with many objects (because the image is already a partial view of the environment).</p>
 
-<p>Another differentiation about those observations is: Despite the 2D image drawbacks, it is an agent self-contained sensing while the vector observation used need access of the underlying environment model to be processed and fed to the agent.</p>
+<p>Finally, the third encoding adds freedom to the camera forward look direction and hence this information is passed with a 3D vector (local camera direction) together with the 2D RGB image.</p>
+
+<p>One differentiation about those observations is: Despite the 2D image drawbacks, it is an agent self-contained sensing while the vector observation used in the first encoding need access of the underlying environment model to be processed and fed to the agent. The third encoding, regardless of using a mixed observations stills self-contained.</p>
 
 
 
@@ -116,7 +123,7 @@ While these can all be cast as essentially the same task, their difference comes
 		</ul>
 	</li>
 </ul>
-Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, which is not possible at the same time, the Jump action has priority over the crouch.
+Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, despite being separated branches, priority is given to Jump action over the Crouch as it is not physically possible to do both at the same time.
 </p>
 
 <h3>Training</h3>
