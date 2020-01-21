@@ -25,7 +25,11 @@
 			<li>(Complex geometry) Coins with \(1.5 m\) diameter</li>
 		</ul>
 	</li>
-	<li>Standing pad: a painted circle on the ground delimiting a region with \(5 m\) diameter.</li>
+	<li>Standing pad: 
+		<ul>
+			<li>A painted circle on the ground delimiting a region with \(5 m\) diameter.</li>
+		</ul>
+	</li>
 </ul>
 One or many of these objects can be found in a specific scenario for training. Their count, positioning and any other relevant detail will be specified for each training section later.
 </p>
@@ -36,27 +40,41 @@ One or many of these objects can be found in a specific scenario for training. T
 
 <p>A form of classifying an environment is relative to how observable it is:
 	<ul>
-		<li>Completely observable: all information from the environment is available.</li>
-		<li>Partially observable: some of the information from the environment is available.</li>
+		<li>Completely observable: 
+			<ul>
+				all information from the environment is available.
+			</ul>
+		</li>
+		<li>
+			<ul>
+				Partially observable: some of the information from the environment is available.
+			</ul>
+		</li>
 	</ul>
-It's intrinsic related to how the agent senses its surrounding and has a broad impact in the agent's performance.
-One example as where it is called <i>completely observable</i>: </p>
+This classification is intrinsic related to how the agent senses its surrounding.
+One example of a <i>completely observable</i> environment is: </p>
 <p>
 <blockquote>
 Assuming the previous environment without obstacles and with a single collectible object as goal. If the observations are set as the agent position and direction, the direction to target and target position. It is a completely observable configuration in the sense that independent of the agent state (position and direction) it always have complete information  of itself and the target to complete its goal. Indeed one could even write a heuristic to solve this simple task.
 </blockquote>
 </p>
 
-<p>In the other hand, following the same example, if visual information is used, (i.e, a 2D image from the agent's vision cone) instead of the aforementioned observations, depending on where the agent/target is, it may be partially or not visible to each other at all. In this case the sensing of the agent varies depending of its state and it is always partial. This differentiation of how the environment is perceived and how much information is available per observation dictates the performance of learning. 
+<p>In the other hand, following the same example, if visual information is used, (i.e, a 2D image from the agent's vision cone) instead of the aforementioned observations, depending on where the agent/target is, it may be partially or not visible at all. In this case the sensing of the agent varies depending of its state and it is always partial. This differentiation of how the environment is perceived and how much information is available per observation dictates the performance of learning. 
 </p>
 
 <h3>Tasks</h3>
 
 <p>The agent task can be put as a mobility task, given a stimulus it needs to move towards the target point. Inside this general task three specialized tasks are implemented:
 <ul>
-	<li>Collecting an object: reach the object position, when the agent collides with it the object is removed from the scene, i.e., collected.</li>
-	<li>Reach and stay: reach the standing pad and stay inside it.</li>
-	<li>Fetch: reach the object and go back to its initial position. It also can be thought as reaching two objects, for example, the stick and then who threw it.</li>
+	<li>Collecting an object:
+		<ul>reach the object position, when the agent collides with it the object is removed from the scene, i.e., collected.</ul>
+	</li>
+	<li>Reach and stay: 
+		<ul>reach the standing pad and stay inside it.</ul>
+	</li>
+	<li>Fetch: 
+		<ul>reach the object and go back to its initial position. It also can be thought as reaching two objects, for example, the stick and then who threw it.</ul>
+	</li>
 </ul>
 
 While these can all be cast as essentially the same task, their difference comes of how they are modeled inside the virtual environment and which information is available to the agent to complete them. Nevertheless, they are practical examples of mobility tasks.
@@ -107,7 +125,9 @@ While these can all be cast as essentially the same task, their difference comes
 
 <p>One differentiation about those observations is: Despite the 2D image drawbacks, it is an agent self-contained sensing while the vector observation used in the first encoding need access of the underlying environment model to be processed and fed to the agent. The third encoding, regardless of using a mixed observations stills self-contained.</p>
 
+<h4>Actions</h4>
 
+<p>The DogBot's actuator(s) is a character inside Unity. It is composed of various animations and a controller (with blend trees and alikes) which receives four parameters controlling the X-Axis velocity, the Y-Axis rotation and booleans jump/crouch.</p>
 
 <p>For the agent's action encoding two schemes were used continuous and discrete:
 <ul>
@@ -128,10 +148,30 @@ While these can all be cast as essentially the same task, their difference comes
 		</ul>
 	</li>
 </ul>
-Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, despite being separated branches, priority is given to Jump action over the Crouch as it is not physically possible to do both at the same time.
+Each bullet is a action branch, and can be choose simultaneously. For the case of Jumping/Crouching, despite being separated branches, priority is given to Jump action over the Crouch as it is not physically possible to do both at the same time. While the encoding for actions are arbitrary, they reflect the ranges of the Unity character controller such as <i>max velocity</i> and <i>turn speed</i>, which are configurable but from the agent's perspective are intrinsic.
 </p>
 
 <h4>Reward</h4>
+
+<p>The entire universe of reinforcement learning is based on encouraging the best behavior through rewards (much like it is done when teaching a trick to a pet), in other words, rewarding good actions according. It can also be posed as a optimization problem of maximizing the total reward (a short introduction to this matter can be found <a href="./wrap/intro-rl.html">here</a>).</p>
+
+<p>In this scenario two perspectives a brought up: developing a good reward signal is the key to being able to solve this optimization problem, yet most of times it is not as easy to qualify a given action individually, but only the final outcome of a sequence of actions. In theory, even for the cases where only the final outcome is rewarded, in the limit after many (infinite) experiences it would be possible to learn a optimal behavior policy. Sadly in the real world, limited resources are available be it time, number of experiences, and so on. Hence, the art in learning good policies lies in modeling good rewards and good algorithms as much as possible.</p>
+
+TODO  experiment with visual observation and puppo like reward.</br>
+
+<p>The DogBot agent experiments with both types of reward:
+<ul>
+	<li>Per action reward:
+		<ul>Used for the pure vector observation in the complete observable case. Positive reward is assigned if the agents approximates of the target, negative reward is assigned if it distances itself from it. The formula used in this case is \(r = 0.01 (v_{\text{linear}} \cdot d_{\text{target}})\)</ul>
+	</li>
+	<li>Sparse reward: 
+		<ul>Used for the visual observation. Positive reward \(+1.0\) is given when the agent reach its destination, i.e., the collectible.</ul>
+	</li>
+</ul>
+In all cases, a small negative reward \(-0.0005\) is given at each time step \(t_i\), it was chosen to be close to \(-\frac{1}{\text{# steps}}\) so the accumulated penalty would not saturate the total reward signal. This is widely used as a time penalty to stimulate the completion of a task in the shortest time. Also leaving the training area leads to a negative reward of \(-1.0\) and restart.
+</p>
+
+TODO - test with no restart?</br>
 
 <h3>Training</h3>
 
@@ -192,6 +232,8 @@ training
 		- generalization
 			- object shape (because of color?)
 			- area size
+		- TODO - test  visual observations with puppo like rewards.
 	- network archtecture
+	
 			
 	
