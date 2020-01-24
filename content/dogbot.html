@@ -85,12 +85,18 @@ Assuming the previous environment without obstacles and with a single collectibl
 	</li>
 </ul>
 
-While these can all be cast as essentially the same task, their difference comes of how they are modeled inside the virtual environment and which information is available to the agent to complete them. Nevertheless, they are practical examples of mobility tasks.
+While these can all be cast as essentially the same task, their difference comes of how they are modeled inside the virtual environment and which information is available to the agent to complete them. That said, they are practical examples of mobility tasks.
 </p>
 
 <h3>Agent</h3>
 
-<p>The agent is an entity abstraction which is itself a <i>behavior policy</i>. Nevertheless when referred without a specific policy it can be imagined as an entity with sensors (observations) and actuators (actions) where a policy can be plugged in, in programming it would be equivalent to an <i>interface</i>. The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet, the most important is what it observes to take actions, how both the observations and actions are encoded and the associated rewards.</p>
+<p>The agent is an entity abstraction which is itself a <i>behavior policy</i>. Nevertheless, when referred without a specific policy it can be imagined as an entity with sensors (observations) and actuators (actions) where a policy can be plugged in, in programming it would be equivalent to an <i>interface</i>. The agent(DogBot) had its actions already briefly described with its standard animations and character controller. Yet, the most important is what it observes to take actions, how both the observations and actions are encoded and how the associated rewards are distributed.</p>
+
+<h4>Character controller</h4>
+
+<p></p>
+
+<img src="">Char controller img</img>
 
 <h4>Observations</h4>
 
@@ -127,7 +133,7 @@ While these can all be cast as essentially the same task, their difference comes
 
 <img = src="">input -> blackbox -> output</img>
 
-<p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information was removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
+<p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information were removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
 
 <p>Next, the visual encoding consists of \( 84\times 84 \times 3 = 21168\) numbers (floats), in a 2D RGB image. This image is the direct rendering of the agent's view. This kind of observation is interesting for many real world applications. yet it is much more complex and less complete than the first encoding in \(20\) numbers because only partial information can be inferred from it. In spite of that, it can be more general in some aspects. For example if a variable number of collectibles is admitted in the environment, the first encoding would not be able to handle that variation, but using a 2D image the agent could deal with many objects (because the image is already a partial view of the environment).</p>
 
@@ -196,6 +202,7 @@ TODO - test with no restart?</br>
 	<li>Number of hidden layers</li>
 	<li>Number of neurons per layer</li>
 	<li>Visual encoding type: \(\text{simple}\), \(\text{nature_cnn}\), \(\text{resnet}\)</li>
+	<li>Recurrent network: \(\text{yes}\), \(\text{no}\)</li>
 </ul>
 Other specific details of details of the network itself are omitted because they are the default of ML-Agents and can be found in their <a href="https://github.com/Unity-Technologies/ml-agents/">documentation and code</a> itself.
 </p>
