@@ -17,7 +17,9 @@
 
 <p>The environment is a Unity scene where the character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it a final state (game over) is reached leading to a reset or restart.</p>
 
-<img src="">Env img</img>
+<div class="image fit" style="text-align: center">
+<img src="./images/env.png">Top View from environment</img>
+</div>
 
 <p>The training area can contain the following objects:
 <ul>
@@ -36,15 +38,19 @@
 One or many of these objects can be found in a specific scenario for training. Their count, positioning and any other relevant detail will be specified for each training section later.
 </p>
 
-<img src="">Objects img</img>
+<div class="image fit" style="text-align: center">
+<img src="./images/objects.png" >Scene objects</img>
+</div>
 
 <p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is down-sampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the down-sampled input image.</p>
 
-<img src="">img & downsample</img>
+<div class="image fit" style="text-align: center">
+<img src="./images/downsampled.png" >(Left) full resolution, (Right) down-sampled visual observation</img>
+</div>
 
 </p> One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by a player. Complex behaviors can be created using simple geometries for the agent while complex geometries and totally different context is seen by the player. Therefore, it enables one to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
 
-<img src="">Diff views illustration</img>
+<!-- TODO <img src="">Diff views illustration</img> -->
 
 <p>A form of classifying an environment is relative to how observable it is:
 	<ul>
@@ -94,9 +100,12 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h4>Character controller</h4>
 
-<p></p>
+<p>The Unity character controller is the lower level hierarchy of actions and can be considered as the intrinsic of the agent's actuators. Its parameters are:</p>
 
-<img src="">Char controller img</img>
+<div class="image 50%" style="text-align: center">
+<img src="./images/char-control.png">Character controller parameters</img>
+</div>
+The list of the parameters used in the training are in the <a href="#char-table">experiments section</a></br>
 
 <h4>Observations</h4>
 
@@ -131,7 +140,9 @@ While these can all be cast as essentially the same task, their difference comes
 
 <p><i>Note that being completely or partially observable is not bind to the kind of encoding but the information passed. For example, in a 2D chess game, if the observation encoding were a view-from-top 2D image of the entire board, it would be completely observable.</i></p>
 
-<img = src="">input -> blackbox -> output</img>
+<div class="image fit" style="text-align: center">
+<img = src="./images/blackbox-diag.svg">Abstraction of observation (input), action (output), model (policy) and the agent.</img>
+</div>
 
 <p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information were removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
 
@@ -223,6 +234,118 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 	<li>Vis encode, Standing pad</li>
 	<li>Vis encode, Camera movement detached from forward direction</li>
 </ul>
+
+<p>All experiments uses the following parameters:
+
+<table id="char-table">
+	<tr><th colspan="3" style="text-align: center">Character Controller</th></tr>
+	<tr>
+		<th>Name</th>
+		<th>Value</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>Moving turn speed</td>
+		<td>\(45.0\) \(deg/s\)</td>
+		<td>Turn speed when not stationary</td>
+		</td>
+	</tr>
+	<tr>
+		<td>Stationary turn speed</td>
+		<td>\(30.0\) \(deg/s\)</td>
+		<td>Turn speed when stationary</td>
+	</tr>
+	<tr>
+		<td>Jump power</td>
+		<td>\(5.0\) \(m/s\)</td>
+		<td>Vertical velocity applied when jumping</td>
+	</tr>
+	<tr>
+		<td>Forward Velocity</td>
+		<td>\(9.0\) \(m/s\)</td>
+		<td>Maximum forward velocity</td>
+	</tr>
+	<tr>
+		<td>Backward Velocity</td>
+		<td>\(2.0\) \(m/s\)</td>
+		<td>Maximum backward velocity</td>
+	</tr>
+	<tr>
+		<td>Gravity multiplier</td>
+		<td>\(1.0\)</td>
+		<td>Multiplier for gravity simulation</td>
+	</tr>
+	<tr>
+		<td>Anim speed multiplier</td>
+		<td>\(1.0\)</td>
+		<td>Multiplier for animation time scale</td>
+	</tr>
+</table>
+</p>
+
+<p>
+<table>
+	
+	<tr><th colspan="3" style="text-align: center">Training Configuration</th></tr>
+	<tr>
+		<th>Name</th>
+		<th>Value</th>
+		<th>Description</th>
+	</tr>
+	<tr>
+		<td>buffer size</td>
+		<td>\(40960\)</td>
+		<td>Number of samples collected for each policy update</td>
+		</td>
+	</tr>
+	<tr>
+		<td>hidden units</td>
+		<td>\(512\)</td>
+		<td>Number of neurons per hidden layer</td>
+	</tr>
+	<tr>
+		<td>num layers</td>
+		<td>\(2\)</td>
+		<td>Number of hidden layers used for the model</td>
+	</tr>
+	<tr>
+		<td>learning rate</td>
+		<td>\(3.0\times 10^{-4}\)</td>
+		<td>Initial learning rate for training</td>
+	</tr>
+	<tr>
+		<td>max steps</td>
+		<td>\(2\times 10^7\) \(m/s\)</td>
+		<td>Number of total simulation steps (actions) taken for training</td>
+	</tr>
+	<tr>
+		<td>num epochs</td>
+		<td>\(5\)</td>
+		<td>Number of times each collected observation is used for training</td>
+	</tr>
+	<tr>
+		<td>time horizon</td>
+		<td>\(1000\)</td>
+		<td>Horizon for learning, it represents how far in time steps one action can influence a past reward</td>
+	</tr>
+	<tr>
+		<td>gamma</td>
+		<td>\(0.995\)</td>
+		<td>Discount factor, it represents how much of a n-future reward (\(R_n\)) is assigned to a present action in the form \(\gamma^n R_n\).</td>
+	</tr>
+</table>
+</p>
+
+<p>The following table present the result of training as <i>Mean Reward</i> which is the average number of objects collected per episode. It was run for \(200\) episodes or\(10^6\) steps, (each episode is \(5000\) steps long).</p>
+<table>
+<tr>
+	<th>Name</th>
+	<th>Observation Type</th>
+	<th>Action Type</th>
+	<th>Reward Type</th>
+	<th>Mean Reward</th>
+</tr>
+</table>
 
 <h4>Discussion</h4>
 
