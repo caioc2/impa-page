@@ -100,12 +100,11 @@ While these can all be cast as essentially the same task, their difference comes
 
 <h4>Character controller</h4>
 
-<p>The Unity character controller is the lower level hierarchy of actions and can be considered as the intrinsic of the agent's actuators. Its parameters are:</p>
+<p>The Unity character controller is the lower level hierarchy of actions and can be considered as the intrinsic of the agent's actuators. It controls the velocity, turn speed, gravity and other effects of the actuator (the character body properties). The list of the parameters used in the training are in the <a href="#char-table">experiments section</a>, while in the following there is a figure of those parameters inside Unity.</p>
 
-<div class="image 50%" style="text-align: center">
-<img src="./images/char-control.png">Character controller parameters</img>
+<div class="image 50%" style="display: block; text-align: center; margin-left: auto; margin-right: auto;">
+	<img src="./images/char-control.png" style="margin-left: auto; margin-right: auto;">Character controller parameters</img>
 </div>
-The list of the parameters used in the training are in the <a href="#char-table">experiments section</a></br>
 
 <h4>Observations</h4>
 
@@ -184,11 +183,8 @@ Each bullet is a action branch, and can be choose simultaneously. For the case o
 
 <p>In this scenario two perspectives a brought up: developing a good reward signal is the key to being able to solve this optimization problem, yet most of times it is not as easy to qualify a given action individually, but only the final outcome of a sequence of actions. In theory, even for the cases where only the final outcome is rewarded, in the limit after many (infinite) experiences it would be possible to learn a optimal behavior policy. Sadly in the real world, limited resources are available be it time, number of experiences, and so on. Hence, the art in learning good policies lies in modeling good rewards and good algorithms as much as possible. <i>Here good performance means reduced time and sample complexity.</i></p>
 
-<p></p>
 
-TODO  experiment with visual observation and puppo like reward.</br>
-
-<p>The DogBot agent experiments with both types of reward:
+<p>The DogBot agent experiments with  types of reward:
 <ul>
 	<li>Per action reward:
 		<ul>Positive reward is assigned if the agents approximates of the target, negative reward is assigned if it distances itself from it. The formula used in this case is \(r = 0.01 (v_{\text{linear}} \cdot d_{\text{target}})\)</ul>
@@ -197,30 +193,24 @@ TODO  experiment with visual observation and puppo like reward.</br>
 		<ul>Positive reward \(+1.0\) is given when the agent reach its destination, i.e., the collectible.</ul>
 	</li>
 </ul>
-In all cases, a small negative reward \(-0.0005\) is given at each time step \(t_i\), it was chosen to be close to \(-\frac{1}{\text{# steps}}\) so the accumulated penalty would not saturate the total reward signal. This is widely used as a time penalty to stimulate the completion of a task in the shortest time. Also leaving the training area leads to a negative reward of \(-1.0\) and restart.
+In all cases, leaving the training area leads to a negative reward of \(-1.0\) ending the episode. Also a small negative reward \(-0.0005\) is given at each time step \(t_i\). It was chosen to be close to \(-\frac{1}{\text{# steps}}\) so the accumulated penalty would not saturate the total reward signal. This is widely used as a time penalty to stimulate the completion of a task in the shortest time.
 </p>
 
 <p>It's also important to classify these rewards in another way. The first reward needs a broader knowledge of the environment to be calculated depending both of the agent and environment underlying state. In the other hand, the second could be completely assigned with the agent's sensing. This is interesting because it resembles the agent self-contained property and have implications in the learning performance and generalization. For obvious reasons the later is expected to be harder.</p>
 
-TODO - test with no restart?</br>
-
 <h3>Training</h3>
 
-<p>The tools used for training were Unity and its machine learning framework <a href="https://unity3d.com/machine-learning/">ML-Agents</a>. All experiments use the Proximal Policy Optimization (<a href="https://openai.com/blog/openai-baselines-ppo/">PPO</a>).</p>
+<p>The tools used for training were Unity and its machine learning framework <a href="https://unity3d.com/machine-learning/">ML-Agents</a>. All experiments use the Proximal Policy Optimization (<a href="https://openai.com/blog/openai-baselines-ppo/">PPO</a>).</p> 
 
-<p>The ML-Agents framework exposes some parameters related to it's build-in models, the ones related to the network architecture are:
-<ul>
-	<li>Number of hidden layers</li>
-	<li>Number of neurons per layer</li>
-	<li>Visual encoding type: \(\text{simple}\), \(\text{nature_cnn}\), \(\text{resnet}\)</li>
-	<li>Recurrent network: \(\text{yes}\), \(\text{no}\)</li>
-</ul>
-Other specific details of details of the network itself are omitted because they are the default of ML-Agents and can be found in their <a href="https://github.com/Unity-Technologies/ml-agents/">documentation and code</a> itself.
+<p>Each experiment took between \(16\) to \(30\) hours to complete, not accounting for many "pre-experiments" and tests. For this reason, they were run only once and across different machines. While some insight can be taken from the results, it may not be accurate to take conclusions from single experiments even that they usually tend to converge to the same solution across multiple runs.</p>
+
+
+<p>The ML-Agents framework exposes some parameters related to it's build-in models (network architecture), they will be specified inside the <a href="#exp_sec">experiment section</a>. Other specific details of the network itself are omitted because they are the default of ML-Agents and can be found in their <a href="https://github.com/Unity-Technologies/ml-agents/">documentation and code</a>. <i>This choice was made because the focus is on the development of the agent, environment and reward signal instead of network architecture.</i>
 </p>
 
 
 
-<h4>Experiments</h4>
+<h4 id="exp_sec">Experiments</h4>
 
 The first is an implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively. 
 
@@ -336,27 +326,127 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 </table>
 </p>
 
-<p>The following table present the result of training as <i>Mean Reward</i> which is the average number of objects collected per episode. It was run for \(200\) episodes or\(10^6\) steps, (each episode is \(5000\) steps long).</p>
+<p>The following table present the result of running the trained model on the test scene containing a single collectible which randomly re-spawn when collected. The evaluations metric is the <i>Mean Reward</i>, the average number of objects collected per episode. It was run for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
+
+<p>The <a href="suc_tb">successful result table</a> contains the training which converged, in other words, the ones that learned a working policy.</p>
 <table>
+<tr><th colspan="6" style="text-align: center">Successful Results</th></tr>
 <tr>
-	<th>Name</th>
+	<th>#</th>
 	<th>Observation Type</th>
 	<th>Action Type</th>
 	<th>Reward Type</th>
+	<th>Collectible</th>
 	<th>Mean Reward</th>
+</tr>
+<tr>
+	<td>1</td>
+	<td>Vector</td>
+	<td>Discrete Masked</td>
+	<td>Per action</td>
+	<td>1, box</td>
+	<td> \(0.0\)</td>
+</tr>
+<tr>
+	<td>2</td>
+	<td>Vector</td>
+	<td>Continuous Masked</td>
+	<td>Per action</td>
+	<td>1, box </td>
+	<td>\(0.0\)</td>
+</tr>
+<tr>
+	<td>3</td>
+	<td>Vector</td>
+	<td>Discrete Masked</td>
+	<td>Sparse</td>
+	<td>1, box</td>
+	<td>\(0.0\)</td>
+</tr>
+<tr>
+	<td>4</td>
+	<td>Vector</td>
+	<td>Continuous Masked</td>
+	<td>Sparse</td>
+	<td>1, box</td>
+	<td>\(0.0\)</td>
+</tr>
+<tr>
+	<td>5</td>
+	<td>Visual</td>
+	<td>Discrete Masked</td>
+	<td>Per action</td>
+	<td>1</td>
+	<td>\(0.0\)</td>
+</tr>
+<tr>
+	<td>6</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>Per action</td>
+	<td>1, box</td>
+	<td>\(0.0\)</td>
+</tr>
+<tr>
+	<td>7</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>Sparse</td>
+	<td>24, boxes</td>
+	<td>\(0.0\)</td>
 </tr>
 </table>
 
+
+<p>Now, the <a href="suc_tb">successful result table</a></p>
+<table>
+<tr><th colspan="6" style="text-align: center">Unsuccessful Results</th></tr>
+<tr>
+	<th>#</th>
+	<th>Observation Type</th>
+	<th>Action Type</th>
+	<th>Reward Type</th>
+	<th>Collectibles</th>
+	<th>Mean Reward</th>
+</tr>
+<tr>
+	<td>1</td>
+	<td>Vector</td>
+	<td>Discrete</td>
+	<td>Per action</td>
+	<td>1</td>
+	<td> \(0.0\)</td>
+</tr>
+</table>
+
+<p>TODO - results</p>
+
+
+<h5>Environment Variation</h5>
+
+<p>Two other interesting setup are: the standing pad which has a different objective, testing the model trained with a single collectible against an environment with various collectibles and varying the environment size/scale. This later case is only possible with visual observation, since its input/output are the same independent of the number of objects.</p>
+
+<p>TODO: scores</p>
+<p>TODO: # of times agent leaves training area when using variations</p>
+
+
+
 <h4>Discussion</h4>
 
-<p>Effect of various action branches at the same time</p>
-<p>Vis vs vector observation</p>
-<p>discrete vs continuous action space</p>
-<p>Multiple objects effect</p>
-<p>Camera movement setup and attention like mechanism<p>
+<p>From the various modeling and its results, some guides for modeling the agents sensing, the environment complexity and also the reward signal can be guessed. Here, they are split according with their modeling.</p>
+
+<h5>Effect of various action branches at the same time</h5>
+<h5>Visual versus vector observation</h5>
+<h5>Discrete versus continuous action space</h5>
+<h5>Per action versus sparse reward</h5>
+<h5>Single versus multiple objects</h5>
+<h5>Camera movement setup and attention like mechanism</h5>
 
 
+<h4>Conclusion</h4>
 
+<p>Modeling and training agents to complete tasks, (in the way we would like), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment with the objective of obtaining useful insight and correlate it to the theory.</p> 
+</p>The key feature to develop is certainly the reward system, making the agent being able to have feed back even on a completely random behavior is a must. Even so it may get stuck if the action space is complex. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with a masked action space and sparse reward, increasing the amount of objects in the scene lead the agent to converge.</p>
 
 
 <figure style="text-align:center;">
@@ -409,6 +499,9 @@ training
 			- area size
 		- TODO - test  visual observations with puppo like rewards.
 	- network architecture
+	
+	
+TODO - test with no restart?</br>
 </code>	
 			
 	
