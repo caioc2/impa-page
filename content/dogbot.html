@@ -446,7 +446,9 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 <h4>Conclusion</h4>
 
 <p>Modeling and training agents to complete tasks, (in the way we would like), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment with the objective of obtaining useful insight and correlate it to the theory.</p> 
-</p>The key feature to develop is certainly the reward system, making the agent being able to have feed back even on a completely random behavior is a must. Even so it may get stuck if the action space is complex. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with a masked action space and sparse reward, increasing the amount of objects in the scene lead the agent to converge.</p>
+</p>The key feature to develop is certainly the reward system, making the agent being able to have feed back even on a completely random behavior is a must. Even so it may get stuck if the action space is complex. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with sparse reward, but increased amount of objects in the scene lead the agent to converge.</p>
+
+<p>Another point was the observation type, while the vector observation had all the data needed to heuristically solve the problem, the visual observation had a better result. It may be due to encoding which is compact and human understandable, but may not be the best for learning. In the other hand, the visual observation which is partial **?, could be better encoded by the neural network in the learning process.</p>
 
 
 <figure style="text-align:center;">
