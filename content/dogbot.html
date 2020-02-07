@@ -18,7 +18,7 @@
 <p>The environment is a Unity scene where the character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it a final state (game over) is reached leading to a reset or restart.</p>
 
 <div class="image fit" style="text-align: center">
-<img src="./images/env.png">Top View from environment</img>
+<img src="images/env.png">Top View from environment</img>
 </div>
 
 <p>The training area can contain the following objects:
@@ -39,13 +39,13 @@ One or many of these objects can be found in a specific scenario for training. T
 </p>
 
 <div class="image fit" style="text-align: center">
-<img src="./images/objects.png" >Scene objects</img>
+<img src="images/objects.png" >Scene objects</img>
 </div>
 
 <p>In general, the choice for big objects is mainly due to the use with visual observations where the size of input image is down-sampled to \(84\times 84\) pixels and hence the need of it being big enough to appear in the down-sampled input image.</p>
 
 <div class="image fit" style="text-align: center">
-<img src="./images/downsampled.png" >(Left) full resolution, (Right) down-sampled visual observation</img>
+<img src="images/downsampled.png" >(Left) full resolution, (Right) down-sampled visual observation</img>
 </div>
 
 </p> One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by a player. Complex behaviors can be created using simple geometries for the agent while complex geometries and totally different context is seen by the player. Therefore, it enables one to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
@@ -103,7 +103,7 @@ While these can all be cast as essentially the same task, their difference comes
 <p>The Unity character controller is the lower level hierarchy of actions and can be considered as the intrinsic of the agent's actuators. It controls the velocity, turn speed, gravity and other effects of the actuator (the character body properties). The list of the parameters used in the training are in the <a href="#char-table">experiments section</a>, while in the following there is a figure of those parameters inside Unity.</p>
 
 <div class="image 50%" style="display: block; text-align: center; margin-left: auto; margin-right: auto;">
-	<img src="./images/char-control.png" style="margin-left: auto; margin-right: auto;">Character controller parameters</img>
+	<img src="images/char-control.png" style="margin-left: auto; margin-right: auto;">Character controller parameters</img>
 </div>
 
 <h4>Observations</h4>
@@ -140,7 +140,7 @@ While these can all be cast as essentially the same task, their difference comes
 <p><i>Note that being completely or partially observable is not bind to the kind of encoding but the information passed. For example, in a 2D chess game, if the observation encoding were a view-from-top 2D image of the entire board, it would be completely observable.</i></p>
 
 <div class="image fit" style="text-align: center">
-<img = src="./images/blackbox-diag.svg">Abstraction of observation (input), action (output), model (policy) and the agent.</img>
+<img = src="images/blackbox-diag.svg">Abstraction of observation (input), action (output), model (policy) and the agent.</img>
 </div>
 
 <p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like as the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information were removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
@@ -179,7 +179,7 @@ Each bullet is a action branch, and can be choose simultaneously. For the case o
 
 <h4>Reward</h4>
 
-<p>The entire universe of reinforcement learning is based on encouraging the best behavior through rewards (much like it is done when teaching a trick to a pet), in other words, rewarding good actions according. It can also be posed as a optimization problem of maximizing the total reward (a short introduction to this matter can be found <a href="./wrap/intro-rl.html">here</a>).</p>
+<p>The entire universe of reinforcement learning is based on encouraging the best behavior through rewards (much like it is done when teaching a trick to a pet), in other words, rewarding good actions according. It can also be posed as a optimization problem of maximizing the total reward (a short introduction to this matter can be found <a href="wrap/intro-rl.html">here</a>).</p>
 
 <p>In this scenario two perspectives a brought up: developing a good reward signal is the key to being able to solve this optimization problem, yet most of times it is not as easy to qualify a given action individually, but only the final outcome of a sequence of actions. In theory, even for the cases where only the final outcome is rewarded, in the limit after many (infinite) experiences it would be possible to learn a optimal behavior policy. Sadly in the real world, limited resources are available be it time, number of experiences, and so on. Hence, the art in learning good policies lies in modeling good rewards and good algorithms as much as possible. <i>Here good performance means reduced time and sample complexity.</i></p>
 
@@ -578,7 +578,7 @@ While the continuous actions space seems to be better than the discrete action s
 
 
 <figure style="text-align:center;">
-<img class="image 25%" src="./images/ch-end.jpg">
+<img class="image 25%" src="images/ch-end.jpg">
 </figure>
 
 
