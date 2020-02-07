@@ -568,7 +568,7 @@ While the continuous actions space seems to be better than the discrete action s
 
 <h4>Conclusion</h4>
 
-</p>The key feature to develop is certainly the reward system, making the agent to be able to have feedback even on a completely random behavior is a must, be it through a per action reward or a easier environment where rewards are not much sparse. Even so, it may get stuck if the action space is complex or if there is not enough time to commit to an action. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with sparse reward, but increased amount of objects in the scene lead the agent to converge.</p>
+</p>The key feature to develop is certainly the reward system. Making the agent to be able to have feedback even on a completely random behavior is a must, be it through a per action reward or a easier environment where rewards are not much sparse. Even so, it may get stuck if the action space is complex or if there is not enough time to commit to an action. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with sparse reward, but increased amount of objects in the scene lead the agent to converge.</p>
 
 <p>Another point was the observation type, while the vector observation had all the data needed to heuristically solve the problem, the visual observation had a better result. It may be due to encoding which is compact and human understandable, but may not be the best for learning. Letting the model extract the features from visual observation is more expensive for training but can achieve better policies and be easily expansible to new environment.</p>
 
