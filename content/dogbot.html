@@ -143,7 +143,7 @@ While these can all be cast as essentially the same task, their difference comes
 <img = src="./images/blackbox-diag.svg">Abstraction of observation (input), action (output), model (policy) and the agent.</img>
 </div>
 
-<p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information were removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
+<p>The first encoding takes a total of \(20\) numbers (floats) as observation. These were calculated from the agent/environment state and are much like as the observations taken by <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Puppo, the Corgi</a>, which is a demo made by Unity. There are some differences to fit our modeling. First, the <i>Normalized distance to the border</i> is added, because it is relevant in an unbounded environment to keep the agent inside the desired area. Last all the joint angles and torque information were removed. Puppo works on a low-level control of the joint angles and torque while this new agent works on a high-level control with animations. Those differences are related to <i>how the agent senses itself</i>, while how it senses the rest of the environment and its target remained the same.</p>
 
 <p>Next, the visual encoding consists of \( 84\times 84 \times 3 = 21168\) numbers (floats), in a 2D RGB image. This image is the direct rendering of the agent's view. This kind of observation is interesting for many real world applications. yet it is much more complex and less complete than the first encoding in \(20\) numbers because only partial information can be inferred from it. In spite of that, it can be more general in some aspects. For example if a variable number of collectibles is admitted in the environment, the first encoding would not be able to handle that variation, but using a 2D image the agent could deal with many objects (because the image is already a partial view of the environment).</p>
 
@@ -213,7 +213,7 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 <h4 id="exp_sec">Experiments</h4>
 
 The first is an implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively. 
-
+<!--
 <ul>
 	<li>Puppo like obs and reward</li>
 	<li>Puppo like obs sparse reward</li>
@@ -224,11 +224,11 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 	<li>Vis encode, Standing pad</li>
 	<li>Vis encode, Camera movement detached from forward direction</li>
 </ul>
-
+-->
 <p>All experiments uses the following parameters:
 
 <table id="char-table">
-	<tr><th colspan="3" style="text-align: center">Character Controller</th></tr>
+	<tr><th colspan="3" style="text-align: center"><font size="+2">Character Controller</font></th></tr>
 	<tr>
 		<th>Name</th>
 		<th>Value</th>
@@ -276,11 +276,23 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 <p>
 <table>
 	
-	<tr><th colspan="3" style="text-align: center">Training Configuration</th></tr>
+	<tr><th colspan="3" style="text-align: center"><font size="+2">Training Configuration</font></th></tr>
 	<tr>
 		<th>Name</th>
 		<th>Value</th>
 		<th>Description</th>
+	</tr>
+	<tr>
+		<td>batch size (Continuous)</td>
+		<td>\(4096\)</td>
+		<td>Number of samples used for each optimization step for continuous action space</td>
+		</td>
+	</tr>
+	<tr>
+		<td>batch size (Discrete)</td>
+		<td>\(256\)</td>
+		<td>(TODO: validate)Number of samples used for each optimization step for discrete action space</td>
+		</td>
 	</tr>
 	<tr>
 		<td>buffer size</td>
@@ -326,121 +338,199 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 </table>
 </p>
 
-<p>The following table present the result of running the trained model on the test scene containing a single collectible which randomly re-spawn when collected. The evaluations metric is the <i>Mean Reward</i>, the average number of objects collected per episode. It was run for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
+<p>The following table present the result of running the trained model on the test scene containing <code>#Train Env</code> collectibles which randomly re-spawn when collected. The evaluation metric is the <i>Total Reward</i>, the number of objects collected over all episodes and <i>Reset</i>, the number of times the agent was reset due to leaving the training area. It was run for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
 
-<p>The <a href="suc_tb">successful result table</a> contains the training which converged, in other words, the ones that learned a working policy.</p>
+<p>The table also includes the number of <i>rendered frames</i> and <i>time taken</i>. These two are important, because Unity environments are not stable. <b><i>The results can vary greatly with different time scale, hardware used and even between runs, it happens because each time step is not fixed, despite the <code>FixedUpdate()</code> used is Unity scripts leading to believe it is. That said, presented results are better understood in their magnitude order than directly comparing their numbers.</i></b></p>
+
 <table>
-<tr><th colspan="6" style="text-align: center">Successful Results</th></tr>
+<tr><th colspan="10" style="text-align: center;"><font size="+2">Experiment Results</font></th></tr>
+<tr>
+	<th colspan="5" style="text-align: center;">Training</th>
+	<th colspan="5" style="text-align: center;">Testing</th>
+</tr>
 <tr>
 	<th>#</th>
 	<th>Observation Type</th>
 	<th>Action Type</th>
-	<th>Reward Type</th>
-	<th>Collectible</th>
-	<th>Mean Reward</th>
+	<th>Train Env</th>
+	<th style="border-right: 1px solid;">Reward Type</th>
+	<th>Test Env</th>
+	<th>Total Reward</th>
+	<th>Reset</th>
+	<th>Frame Count</th>
+	<th>Total time (\(\text{sec}\))</th>
 </tr>
 <tr>
 	<td>1</td>
 	<td>Vector</td>
 	<td>Discrete Masked</td>
-	<td>Per action</td>
 	<td>1, box</td>
-	<td> \(0.0\)</td>
+	<td style="border-right: 1px solid;">Per action</td>
+	<td>1, box</td>
+	<td> \(86\)</td>
+	<td> \(62\)</td>
+	<td> \(198589\)</td>
+	<td> \(2004.5\)</td>
 </tr>
 <tr>
 	<td>2</td>
 	<td>Vector</td>
 	<td>Continuous Masked</td>
-	<td>Per action</td>
+	<td>1, box</td>
+	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box </td>
-	<td>\(0.0\)</td>
+	<td>\(283\)</td>
+	<td> \(54\)</td>
+	<td> \(199718\)</td>
+	<td> \(2003.1\)</td>
 </tr>
 <tr>
 	<td>3</td>
 	<td>Vector</td>
 	<td>Discrete Masked</td>
-	<td>Sparse</td>
 	<td>1, box</td>
-	<td>\(0.0\)</td>
+	<td style="border-right: 1px solid;">Sparse</td>
+	<td>1, box</td>
+	<td>\(0\)</td>
+	<td> \(508\)</td>
+	<td> \(193717\)</td>
+	<td> \(2006.1\)</td>
 </tr>
 <tr>
 	<td>4</td>
 	<td>Vector</td>
 	<td>Continuous Masked</td>
-	<td>Sparse</td>
 	<td>1, box</td>
-	<td>\(0.0\)</td>
+	<td style="border-right: 1px solid;">Sparse</td>
+	<td>1, box</td>
+	<td>\(0\)</td>
+	<td> \(0\)</td>
+	<td> \(199693\)</td>
+	<td> \(2004.2\)</td>
 </tr>
 <tr>
 	<td>5</td>
 	<td>Visual</td>
 	<td>Discrete Masked</td>
-	<td>Per action</td>
-	<td>1</td>
-	<td>\(0.0\)</td>
+	<td>1, box</td>
+	<td style="border-right: 1px solid;">Per action</td>
+	<td>1, box</td>
+	<td>\(502\)</td>
+	<td> \(8\)</td>
+	<td> \(100731\)</td>
+	<td> \(2226.5\)</td>
 </tr>
 <tr>
 	<td>6</td>
 	<td>Visual</td>
 	<td>Continuous Masked</td>
-	<td>Per action</td>
 	<td>1, box</td>
-	<td>\(0.0\)</td>
+	<td style="border-right: 1px solid;">Per action</td>
+	<td>1, box</td>
+	<td>\(2809\)</td>
+	<td> \(0\)</td>
+	<td> \(195972\)</td>
+	<td> \(2008.5\)</td>
 </tr>
 <tr>
 	<td>7</td>
 	<td>Visual</td>
 	<td>Continuous Masked</td>
-	<td>Sparse</td>
 	<td>24, boxes</td>
-	<td>\(0.0\)</td>
+	<td style="border-right: 1px solid;">Sparse</td>
+	<td>1, boxes</td>
+	<td>\(10\)</td>
+	<td> \(0\)</td>
+	<td> \(143722\)</td>
+	<td> \(2010.8\)</td>
+</tr>
+<tr>
+	<td>8</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>24, boxes</td>
+	<td style="border-right: 1px solid;">Sparse</td>
+	<td>24, boxes</td>
+	<td>\(4836\)</td>
+	<td> \(1\)</td>
+	<td> \(119444\)</td>
+	<td> \(2024.6\)</td>
+</tr>
+<tr>
+	<td>9</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>1, box</td>
+	<td style="border-right: 1px solid;">Per action</td>
+	<td>24, boxes</td>
+	<td>\(5665\)</td>
+	<td> \(0\)</td>
+	<td> \(119450\)</td>
+	<td> \(2024.2\)</td>
 </tr>
 </table>
 
+<h4>Environment Variation</h4>
 
-<p>Now, the <a href="suc_tb">successful result table</a></p>
+<p>Another interesting setup is varying the size of the environment and checking how it affects agent's behavior. For this experiment, the environment was scaled down by a factor of \(0.5\) and now being a \(50 \times 50\) \(\text{m}\) area.</p>
+
 <table>
-<tr><th colspan="6" style="text-align: center">Unsuccessful Results</th></tr>
+<tr><th colspan="10" style="text-align: center;"><font size="+2">Experiment 2 Results</font></th></tr>
+<tr>
+	<th colspan="5" style="text-align: center;">Training</th>
+	<th colspan="5" style="text-align: center;">Testing</th>
+</tr>
 <tr>
 	<th>#</th>
 	<th>Observation Type</th>
 	<th>Action Type</th>
-	<th>Reward Type</th>
-	<th>Collectibles</th>
-	<th>Mean Reward</th>
+	<th>Train Env</th>
+	<th style="border-right: 1px solid;">Reward Type</th>
+	<th>Test Env</th>
+	<th>Total Reward</th>
+	<th>Reset</th>
+	<th>Frame Count</th>
+	<th>Total time (\(\text{sec}\))</th>
 </tr>
 <tr>
-	<td>1</td>
-	<td>Vector</td>
-	<td>Discrete</td>
-	<td>Per action</td>
-	<td>1</td>
-	<td> \(0.0\)</td>
+	<td>9</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>1, box</td>
+	<td style="border-right: 1px solid;">Per action</td>
+	<td>1, box</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
+</tr>
+<tr>
+	<td>10</td>
+	<td>Visual</td>
+	<td>Continuous Masked</td>
+	<td>24, box</td>
+	<td style="border-right: 1px solid;">Sparse</td>
+	<td>1, box</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
+	<td> \(0\)</td>
 </tr>
 </table>
 
-<p>TODO - results</p>
-
-
-<h5>Environment Variation</h5>
-
-<p>Two other interesting setup are: the standing pad which has a different objective, testing the model trained with a single collectible against an environment with various collectibles and varying the environment size/scale. This later case is only possible with visual observation, since its input/output are the same independent of the number of objects.</p>
-
-<p>TODO: scores</p>
-<p>TODO: # of times agent leaves training area when using variations</p>
-
-
-
 <h4>Discussion</h4>
 
-<p>From the various modeling and its results, some guides for modeling the agents sensing, the environment complexity and also the reward signal can be guessed. Here, they are split according with their modeling.</p>
+<p>The following topics discusses the choices made and the "evidences" provided by the experiments, with the disclaimer of the odd behavior of the Unity engine simulation, and the difficult it brings to validate and reproduce the results. Therefore it should be taken with caution and not generalized.</p>
+
+TODO- videos + images
 
 <h5>Effect of various action branches at the same time</h5>
 <h5>Visual versus vector observation</h5>
 <h5>Discrete versus continuous action space</h5>
 <h5>Per action versus sparse reward</h5>
 <h5>Single versus multiple objects</h5>
-<h5>Camera movement setup and attention like mechanism</h5>
+<h5>Environment variation</h5>
+<h5>(TODO)Camera movement setup and attention like mechanism</h5>
 
 
 <h4>Conclusion</h4>
