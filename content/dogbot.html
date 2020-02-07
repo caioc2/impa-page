@@ -202,17 +202,17 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 
 <p>The tools used for training were Unity and its machine learning framework <a href="https://unity3d.com/machine-learning/">ML-Agents</a>. All experiments use the Proximal Policy Optimization (<a href="https://openai.com/blog/openai-baselines-ppo/">PPO</a>).</p> 
 
-<p>Each experiment took between \(16\) to \(30\) hours to complete, not accounting for many "pre-experiments" and tests. For this reason, they were run only once and across different machines. While some insight can be taken from the results, it may not be accurate to take conclusions from single experiments even that they usually tend to converge to the same solution across multiple runs.</p>
+<p>Each experiment took between \(16\) to \(30\) hours to complete the training process, not accounting for many "pre-experiments" and the generation of results using the test scene. For this reason, the training were run only once and across different machines. While some insight can be taken from the results, it may not be accurate to take conclusions from single experiments (even that they usually tend to converge to the same solution across multiple runs).</p>
 
 
-<p>The ML-Agents framework exposes some parameters related to it's build-in models (network architecture), they will be specified inside the <a href="#exp_sec">experiment section</a>. Other specific details of the network itself are omitted because they are the default of ML-Agents and can be found in their <a href="https://github.com/Unity-Technologies/ml-agents/">documentation and code</a>. <i>This choice was made because the focus is on the development of the agent, environment and reward signal instead of network architecture.</i>
+<p>The ML-Agents framework exposes some parameters related to it's built-in models (network architecture), they will be specified inside the <a href="#exp_sec">experiment section</a>. Other specific details of the network itself are omitted because they are the default of ML-Agents and can be found in their <a href="https://github.com/Unity-Technologies/ml-agents/">documentation and code</a>. <i>This choice was made because the focus is on the development of the agent, environment and reward signal instead of network architecture.</i>
 </p>
 
 
 
 <h4 id="exp_sec">Experiments</h4>
 
-The first is an implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively. 
+<p>The baseline is a implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively.</p>
 <!--
 <ul>
 	<li>Puppo like obs and reward</li>
@@ -285,62 +285,79 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 	<tr>
 		<td>batch size (Continuous)</td>
 		<td>\(4096\)</td>
-		<td>Number of samples used for each optimization step for continuous action space</td>
+		<td>Number of samples used for each optimization step for continuous action space.</td>
 		</td>
 	</tr>
 	<tr>
 		<td>batch size (Discrete)</td>
 		<td>\(256\)</td>
-		<td>(TODO: validate)Number of samples used for each optimization step for discrete action space</td>
+		<td>(TODO: validate)Number of samples used for each optimization step for discrete action space.</td>
 		</td>
 	</tr>
 	<tr>
 		<td>buffer size</td>
 		<td>\(40960\)</td>
-		<td>Number of samples collected for each policy update</td>
+		<td>Number of samples collected for each policy update.</td>
 		</td>
 	</tr>
 	<tr>
 		<td>hidden units</td>
 		<td>\(512\)</td>
-		<td>Number of neurons per hidden layer</td>
+		<td>Number of neurons per hidden layer.</td>
 	</tr>
 	<tr>
 		<td>num layers</td>
 		<td>\(2\)</td>
-		<td>Number of hidden layers used for the model</td>
+		<td>Number of hidden layers used for the model.</td>
 	</tr>
 	<tr>
 		<td>learning rate</td>
 		<td>\(3.0\times 10^{-4}\)</td>
-		<td>Initial learning rate for training</td>
+		<td>Initial learning rate for training.</td>
 	</tr>
 	<tr>
 		<td>max steps</td>
 		<td>\(2\times 10^7\) \(m/s\)</td>
-		<td>Number of total simulation steps (actions) taken for training</td>
+		<td>Number of total simulation steps (actions) taken for training.</td>
 	</tr>
 	<tr>
 		<td>num epochs</td>
 		<td>\(5\)</td>
-		<td>Number of times each collected observation is used for training</td>
+		<td>Number of times each collected observation is used for training.</td>
 	</tr>
 	<tr>
 		<td>time horizon</td>
 		<td>\(1000\)</td>
-		<td>Horizon for learning, it represents how far in time steps one action can influence a past reward</td>
+		<td>Horizon for learning, it represents how far in time steps one action can influence a past reward.</td>
 	</tr>
 	<tr>
 		<td>gamma</td>
 		<td>\(0.995\)</td>
 		<td>Discount factor, it represents how much of a n-future reward (\(R_n\)) is assigned to a present action in the form \(\gamma^n R_n\).</td>
 	</tr>
+	<tr>
+		<td>Curiosity strength</td>
+		<td>\(0.1\)</td>
+		<td>Strength of the curiosity intrinsic reward signal.</td>
+	</tr>
+	<tr>
+		<td>Curiosity gamma</td>
+		<td>\(0.99\)</td>
+		<td>Discount factor for the curiosity reward.</td>
+	</tr>
+	<tr>
+		<td>Visual encoding type</td>
+		<td>\(\text{nature_cnn}\)</td>
+		<td>Type of architecture used for the convolutional layers for the visual observation encoding.</td>
+	</tr>
 </table>
 </p>
 
-<p>The following table present the result of running the trained model on the test scene containing <code>#Train Env</code> collectibles which randomly re-spawn when collected. The evaluation metric is the <i>Total Reward</i>, the number of objects collected over all episodes and <i>Reset</i>, the number of times the agent was reset due to leaving the training area. It was run for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
+<h4>Results</h4>
 
-<p>The table also includes the number of <i>rendered frames</i> and <i>time taken</i>. These two are important, because Unity environments are not stable. <b><i>The results can vary greatly with different time scale, hardware used and even between runs, it happens because each time step is not fixed, despite the <code>FixedUpdate()</code> used is Unity scripts leading to believe it is. That said, presented results are better understood in their magnitude order than directly comparing their numbers.</i></b></p>
+<p>The next table contains the result of the model trained on the test scene containing <code>#Test Env</code> collectibles which randomly re-spawn when collected. The evaluation metric is the <i>Total Reward</i>, (the number of objects collected over all episodes) and <i>Reset</i>, (the number of times the agent was reset due to leaving the training area). It ran for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
+
+<p>The number of <i>rendered frames</i> and <i>time taken</i> are also included. These two are important, because Unity environments are not stable. <b><i>The results can vary greatly with different time scale, hardware used, and even between runs using the same seed. It happens because each time step is not fixed, despite the <code>FixedUpdate()</code> used is Unity scripts leading to believe it is. That said, the results are better understood in their magnitude order than directly comparing their numbers.</i></b></p>
 
 <table>
 <tr><th colspan="10" style="text-align: center;"><font size="+2">Experiment Results</font></th></tr>
@@ -472,7 +489,7 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 
 <h4>Environment Variation</h4>
 
-<p>Another interesting setup is varying the size of the environment and checking how it affects agent's behavior. For this experiment, the environment was scaled down by a factor of \(0.5\) and now being a \(50 \times 50\) \(\text{m}\) area.</p>
+<p>Another interesting setup is varying the size of the environment and checking how it affects the agent's behavior. For this experiment, the environment was scaled down by a factor of \(0.5\) and now having a \(50 \times 50\) \(\text{m}\) area.</p>
 
 <table>
 <tr><th colspan="10" style="text-align: center;"><font size="+2">Experiment 2 Results</font></th></tr>
@@ -518,27 +535,46 @@ The first is an implementation that resembles the <a href="https://blogs.unity3d
 </tr>
 </table>
 
+TODO - Training evolution graphic
+
 <h4>Discussion</h4>
 
-<p>The following topics discusses the choices made and the "evidences" provided by the experiments, with the disclaimer of the odd behavior of the Unity engine simulation, and the difficult it brings to validate and reproduce the results. Therefore it should be taken with caution and not generalized.</p>
+<p>Disclaimer: Given the odd behavior of the Unity engine simulation, and the difficult it brings to validate and reproduce the results all analysis should be taken with caution and not generalized.</p>
 
 TODO- videos + images
 
 <h5>Effect of various action branches at the same time</h5>
+<p>One difficult when training with Un-masked actions was that it would not learn anything. Starting from a random policy, the agent would be stuck alternating between forward and backward. This problem with the Y-Axis movement is probably due to the interval between the actions being short and not allowing the agent to commit to a give action for enough time until a strong reward signal were obtained.</p>
+<p>Nevertheless increasing the action interval would lead to unwanted delays in the reaction time of the agent. Four solutions worked well:
+<ul>
+	<li>Giving a slightly reward for moving forward.</li>
+	<li>Adding a bias in the actions favoring the forward movement.</li>
+	<li>Training the action's branch separated.</li>
+	<li>Restricting the Y-Axis to forward movements only.</li>
+</ul>
+The last one were chosen, given the agent would not need to use backward movement at all in the proposed environment.
+</p>
 <h5>Visual versus vector observation</h5>
 <h5>Discrete versus continuous action space</h5>
+<p>
+While the continuous actions space seems to be better than the discrete action space in all results, it can't be conclusive. One point is the batch size for continuous and discrete action space were different, (the later being smaller) and they were not extensively searched for the best result.</p>
+<p> Even so, it is recommended that continuous actions to have a higher batch size than discrete actions. As the name suggests, continuous actions are continuous and the average between samples makes sense (exists), also another way to think about it is their values are calculated in the form of a sample with a given mean and variance, hence the need to take those from various steps. In the other hand, discrete action are like classification or labeling, so averaging between two or many different labels may not make sense at all. 
+</p>
 <h5>Per action versus sparse reward</h5>
 <h5>Single versus multiple objects</h5>
 <h5>Environment variation</h5>
-<h5>(TODO)Camera movement setup and attention like mechanism</h5>
+<!--<h5>(TODO)Camera movement setup and attention like mechanism</h5>-->
 
 
 <h4>Conclusion</h4>
 
-<p>Modeling and training agents to complete tasks, (in the way we would like), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment with the objective of obtaining useful insight and correlate it to the theory.</p> 
-</p>The key feature to develop is certainly the reward system, making the agent being able to have feed back even on a completely random behavior is a must. Even so it may get stuck if the action space is complex. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with sparse reward, but increased amount of objects in the scene lead the agent to converge.</p>
+</p>The key feature to develop is certainly the reward system, making the agent to be able to have feedback even on a completely random behavior is a must, be it through a per action reward or a easier environment where rewards are not much sparse. Even so, it may get stuck if the action space is complex or if there is not enough time to commit to an action. This was exemplified by the lack of convergence when using the full action space despite having a per action reward. Nevertheless, with sparse reward, but increased amount of objects in the scene lead the agent to converge.</p>
 
-<p>Another point was the observation type, while the vector observation had all the data needed to heuristically solve the problem, the visual observation had a better result. It may be due to encoding which is compact and human understandable, but may not be the best for learning. In the other hand, the visual observation which is partial **?, could be better encoded by the neural network in the learning process.</p>
+<p>Another point was the observation type, while the vector observation had all the data needed to heuristically solve the problem, the visual observation had a better result. It may be due to encoding which is compact and human understandable, but may not be the best for learning. Letting the model extract the features from visual observation is more expensive for training but can achieve better policies and be easily expansible to new environment.</p>
+
+<p>Modeling and training agents to complete tasks, (in the way one would like), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment and its effects. Good policies were learned, although side effects were present which explicits how an agent can exploit unnoticed details of its environment in unpredictable ways for good, bad and ugly things.</p>
+
+<p>Last, there is no formula to achieve good results. Part of it is the art of modeling the system and part is building insight from past failures and adapting, which itself is much the idea of (meta) reinforcement learning.</p>
 
 
 <figure style="text-align:center;">
