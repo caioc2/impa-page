@@ -210,7 +210,7 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 
 
 
-<h4 id="exp_sec">Experiments</h4>
+<h4 id="exp_sec">Configuration</h4>
 
 <p>The baseline is a implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively.</p>
 <!--
@@ -353,7 +353,23 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 </table>
 </p>
 
-<h4>Results</h4>
+<h4 id>Evolution</h4>
+
+<p>The following figure shows the evolution of the training from various configurations. The reward was normalized because each environment had a different reward system and can't be compared directly. Also this figure intends to show the convergence and evolution of the training procedure, while the <a href="#results">results section</a> presents specific rewards for each configuration in a standardized test scene.</p>
+
+<div class="image fit" style="text-align: center">
+<img = src="images/training-stats.png">Reward evolution during training. The naming scheme is as follow: 
+</br><i>puppo</i> stands for vector observation (like the puppo example), 
+</br><i>vis</i> stands for visual observation, 
+</br><i>cont</i>  stands for continuous actions, 
+</br><i>disc</i>  stands for discrete actions, 
+</br><i>vec-comp</i>  stands for vector per action reward (complete), 
+</br><i>vec-sparse</i>  stands for vector sparse reward (partial),
+</br><i>multiple</i>  stands for a scene with multiple collectibles.</img>
+</div>
+
+
+<h4 id="results">Results</h4>
 
 <p>The next table contains the result of the model trained on the test scene containing <code>#Test Env</code> collectibles which randomly re-spawn when collected. The evaluation metric is the <i>Total Reward</i>, (the number of objects collected over all episodes) and <i>Reset</i>, (the number of times the agent was reset due to leaving the training area). It ran for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
 
@@ -535,7 +551,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 </tr>
 </table>
 
-TODO - Training evolution graphic
+
+
 
 <h4>Discussion</h4>
 
@@ -544,7 +561,9 @@ TODO - Training evolution graphic
 TODO- videos + images
 
 <h5>Effect of various action branches at the same time</h5>
+
 <p>One difficult when training with Un-masked actions was that it would not learn anything. Starting from a random policy, the agent would be stuck alternating between forward and backward. This problem with the Y-Axis movement is probably due to the interval between the actions being short and not allowing the agent to commit to a give action for enough time until a strong reward signal were obtained.</p>
+
 <p>Nevertheless increasing the action interval would lead to unwanted delays in the reaction time of the agent. Four solutions worked well:
 <ul>
 	<li>Giving a slightly reward for moving forward.</li>
@@ -554,15 +573,42 @@ TODO- videos + images
 </ul>
 The last one were chosen, given the agent would not need to use backward movement at all in the proposed environment.
 </p>
+
 <h5>Visual versus vector observation</h5>
+
+<p>Visual observation achieved better results than vector observation when using the same reward system. It also could learn faster in the environment with many collectibles, while vector observation can't be applied. Despite it requiring more computational power, it shows that having a end-to-end learning may achieve better performance than having hand crafted features</p>
+
 <h5>Discrete versus continuous action space</h5>
+
 <p>
 While the continuous actions space seems to be better than the discrete action space in all results, it can't be conclusive. One point is the batch size for continuous and discrete action space were different, (the later being smaller) and they were not extensively searched for the best result.</p>
 <p> Even so, it is recommended that continuous actions to have a higher batch size than discrete actions. As the name suggests, continuous actions are continuous and the average between samples makes sense (exists), also another way to think about it is their values are calculated in the form of a sample with a given mean and variance, hence the need to take those from various steps. In the other hand, discrete action are like classification or labeling, so averaging between two or many different labels may not make sense at all. 
 </p>
+
 <h5>Per action versus sparse reward</h5>
+
+<p>Using a per-action reward strategy worked in all cases, while sparse reward only worked in the scene with multiple objects. It is clear that even with the drawback of the agent possible exploiting the reward instead of the true objective a per-action strategy is more reliable.</p>
+<p>In the other hand the sparse reward, given only when the objects is achieve, can't be exploited, but makes the learning process entirely dependent of the difficult of the environment. For those cases a good approach is using a curriculum, starting with very easy tasks and increasing the difficult according with the agent performance. Nevertheless developing a good curriculum and environments are not easy.</p>
+
 <h5>Single versus multiple objects</h5>
+
+<p>Having multiple objects in the scene completely changed the result of using sparse reward, from unable to learn anything to achieving the best result. Giving the agent an environment where it can often achieve a goal even with a random policy is the key point to use sparse reward. It is a good strategy to be used with curriculum learning, in this case, the difficult could be easily controlled by the amount of collectibles. While it was not test here, one can believe that if the agent was trained with such curriculum it would perform extremely well.</p>
+
 <h5>Environment variation</h5>
+
+<p>Two variations where tested, changing the size of the environment and the number of collectibles. Those variations shown interesting behaviors.</p>
+<p>First the agent trained with multiple collectibles which was not able to perform in the single collectible environment, had a good performance when the size of the environment was reduced. From visual inspection, what was happening was: the agent had a short sight. Again if the proposed curriculum was applied this behavior would probably be solved.</p>
+
+<p>Then, the agent trained with a single object performed very well with multiple collectibles, but not as good as the one trained with many objects. Also from visual inspection, the agent would only turn to the right, which indeed works but is not the optimal behavior. In the case of a single object which most of times was far away it would not change much, but in the case of multiple objects it was a limiting factor.</p>
+
+<p>These behaviors reinforces the idea of the need for variation in the training and probably the use of a curriculum of increasing difficult and variability. It also shows the importance of the details of the environment as a key factor for achieving the desired behavior.</p>
+
+<h5>Learning generalization<h5>
+
+<p>Although the agent could somewhat generalize well to multiple and single objects it wasn't as good as the performance of the trained environment. When running on a smaller area it could not cope with the delimited marks and the agent left the are much more than when using the original size.</p>
+
+<p>For achieving good generalization it must experience great variation of the environment. It is a must to provide variations for all aspects of the environment and goal, but following the principles of a curriculum, or the agent may not learn anything.</p>
+
 <!--<h5>(TODO)Camera movement setup and attention like mechanism</h5>-->
 
 
