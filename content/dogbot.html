@@ -13,6 +13,16 @@
 
 <p>With this setup, the later goal is to have some basic trained behaviors which can be used by a higher level "brain" (either learned or heuristic based) to interact with players in a virtual environment. This approach resembles a hierarchical learning splitting complex behaviors into a set of simple behaviors, but instead of learning every single component, it can use heuristic behaviors and traditional animation and character controller together with learning.</p>
 
+<h3>Motivation</h3>
+
+<p>While there are plenty of successful cases of low-level training</humam muscle ref>, developing such learning environments and characters demands a lot of additional work and fine tuning, yet the result may not be suitable for artistic purposes</example>. </p>
+
+<p>The mixed use of heuristic, machine learning and traditional animations simplifies both the learning process and the artistic control over the final result. It gathers the best of each world: the traditional animation and heuristic gives the artistic control over the set of actions whereas the machine learning gives the possibility of the agent generalizing for many situations.</p>
+
+<p>It differs from the other approaches using high level control such as the Atari</ref needed> games in its fundamental principle: it is not solving a existing game, but building its own game environment which gives the freedom of balancing between the learning difficult (generalization) and the control over the actions (static heuristic and animations).</p>
+
+<p>
+
 <h3>Environment</h3>
 
 <p>The environment is a Unity scene where the character can act and interact with objects. It consists of a square gray plane \(110\times 110 m\) with a white border of \(1 m\) diameter, which <i>visually</i> delimits the area of interest. While it is possible to walk past this area, if the agent being trained go past it a final state (game over) is reached leading to a reset or restart.</p>
@@ -468,8 +478,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>24, boxes</td>
 	<td>\(7119\)</td>
 	<td> \(3\)</td>
-	<td> \(181349\)</td>
-	<td> \(2010.1\)</td>
 </tr>
 <tr>
 	<td>9</td>
@@ -502,8 +510,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<th>Test Env</th>
 	<th>Total Reward</th>
 	<th>Reset</th>
-	<th>Frame Count</th>
-	<th>Total time (\(\text{sec}\))</th>
 </tr>
 <tr>
 	<td>9</td>
@@ -512,10 +518,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box</td>
-	<td> \(4596\)</td>
-	<td> \(405\)</td>
-	<td> \(188952\)</td>
-	<td> \(2023.7\)</td>
+	<td> \(12921\)</td>
+	<td> \(249\)</td>
 </tr>
 <tr>
 	<td>10</td>
@@ -524,10 +528,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>24, box</td>
 	<td style="border-right: 1px solid;">Sparse</td>
 	<td>1, box</td>
-	<td> \(1463\)</td>
-	<td> \(171\)</td>
-	<td> \(190049\)</td>
-	<td> \(2023.2\)</td>
+	<td> \(9219\)</td>
+	<td> \(581\)</td>
 </tr>
 </table>
 
@@ -596,7 +598,7 @@ While the continuous actions space seems to be better than the discrete action s
 
 <p>Another point was the observation type, while the vector observation had all the data needed to heuristically solve the problem, the visual observation had a better result. It may be due to encoding which is compact and human understandable, but may not be the best for learning. Letting the model extract the features from visual observation is more expensive for training but can achieve better policies and be easily expansible to new environment.</p>
 
-<p>Modeling and training agents to complete tasks, (in the way one would like), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment and its effects. Good policies were learned, although side effects were present which explicits how an agent can exploit unnoticed details of its environment in unpredictable ways for good, bad and ugly things.</p>
+<p>Modeling and training agents to complete tasks, (in the way one would like to), is a complex problem. Here, the neural network architecture and parameters were not evaluated, but the modeling of the environment and its effects. Good policies were learned, although side effects were present which explicits how an agent can exploit unnoticed details of its environment in unpredictable ways for good, bad and ugly things.</p>
 
 <p>Last, there is no formula to achieve good results. Part of it is the art of modeling the system and part is building insight from past failures and adapting, which itself is much the idea of (meta) reinforcement learning.</p>
 
