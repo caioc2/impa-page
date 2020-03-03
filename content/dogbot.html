@@ -60,8 +60,6 @@ One or many of these objects can be found in a specific scenario for training. T
 
 </p> One important aspect of the environment for the later goal is that what is seen by the agent, for example a big pink cube, is not necessarily visible or the same seen by a player. Complex behaviors can be created using simple geometries for the agent while complex geometries and totally different context is seen by the player. Therefore, it enables one to use it in interesting ways to create interactions between the agent(the dogBot) and the player(a human being).</p>
 
-<!-- TODO <img src="">Diff views illustration</img> -->
-
 <p>A form of classifying an environment is relative to how observable it is:
 	<ul>
 		<li>Completely observable: 
@@ -223,18 +221,7 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 <h4 id="exp_sec">Configuration</h4>
 
 <p>The baseline is a implementation that resembles the <a href="https://blogs.unity3d.com/pt/2018/10/02/puppo-the-corgi-cuteness-overload-with-the-unity-ml-agents-toolkit/">Unity Puppo, the Corgi</a> where vector observation with information such as, speed, direction, direction to target and others are used to describe the scene. While the given environment has many differences from the aforementioned, it is a good starting point  to compares results qualitatively.</p>
-<!--
-<ul>
-	<li>Puppo like obs and reward</li>
-	<li>Puppo like obs sparse reward</li>
-	<li>Vis encode and puppo like reward</li>
-	<li>Vis encode sparse reward</li>
-	<li>Multiple objects, vis encode, sparse</li>
-	<li>Multiple objects, vis encode, sparse, pre-trained puppo like</li>
-	<li>Vis encode, Standing pad</li>
-	<li>Vis encode, Camera movement detached from forward direction</li>
-</ul>
--->
+
 <p>All experiments uses the following parameters:
 
 <table id="char-table">
@@ -518,8 +505,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box</td>
-	<td> \(12921\)</td>
-	<td> \(249\)</td>
+	<td> \(4606\)</td>
+	<td> \(599\)</td>
 </tr>
 <tr>
 	<td>10</td>
@@ -528,8 +515,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>24, box</td>
 	<td style="border-right: 1px solid;">Sparse</td>
 	<td>1, box</td>
-	<td> \(9219\)</td>
-	<td> \(581\)</td>
+	<td> \(1502\)</td>
+	<td> \(241\)</td>
 </tr>
 </table>
 
@@ -589,7 +576,6 @@ While the continuous actions space seems to be better than the discrete action s
 
 <p>For achieving good generalization it must experience great variation of the environment. It is a must to provide variations for all aspects of the environment and goal, but following the principles of a curriculum, or the agent may not learn anything.</p>
 
-<!--<h5>(TODO)Camera movement setup and attention like mechanism</h5>-->
 
 
 <h4>Conclusion</h4>
@@ -606,56 +592,3 @@ While the continuous actions space seems to be better than the discrete action s
 <figure style="text-align:center;">
 <img class="image 25%" src="images/ch-end.jpg">
 </figure>
-
-
-<code>
-idea - high level character control
-idea - basic learned actions controlled by a bigger "brain"
-basic input -  forward, backward, left, right, jump crouch
-
-training
-	- collect pink objects
-		- binary reward {0,1}
-	- reach stand pink pads
-		- inside time reward
-	- visual observation
-	- forward bias
-	- continuous action space (-1,1)
-		- network output scaling
-	- discrete action space {backward, stand, walk, trot, run}, {left, straight, right}
-		- forward bias on reward
-	- puppo like
-		- high level discrete actions
-		- vector observations of direction, distance, borders and velocity
-	- environment
-		- difficult
-			- # items
-			- size
-			- possible actions
-	- reward
-		- shape behavior
-			- binary
-			- increasing
-			- time penalty
-			- action penalty
-		- forward bias
-		- difficult to attain the desired end result
-	- result
-		- puppo like
-			- works good, "complete" information of ambient
-		- visual observation
-			- partial information
-			- movement tied to vision, lack of attention
-			- independent action branches, hard to train together
-			- nonoptimal behavior, forward overfit
-		- generalization
-			- object shape (because of color?)
-			- area size
-		- TODO - test  visual observations with puppo like rewards.
-	- network architecture
-	
-	
-TODO - test with no restart?</br>
-</code>	
-			
-	
