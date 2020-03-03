@@ -373,8 +373,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 
 <p>The next table contains the result of the model trained on the test scene containing <code>#Test Env</code> collectibles which randomly re-spawn when collected. The evaluation metric is the <i>Total Reward</i>, (the number of objects collected over all episodes) and <i>Reset</i>, (the number of times the agent was reset due to leaving the training area). It ran for \(200\) episodes or \(10^6\) steps, (each episode is \(5000\) steps long).</p>
 
-<p>The number of <i>rendered frames</i> and <i>time taken</i> are also included. These two are important, because Unity environments are not stable. <b><i>The results can vary greatly with different time scale, hardware used, and even between runs using the same seed. It happens because each time step is not fixed, despite the <code>FixedUpdate()</code> used is Unity scripts leading to believe it is. That said, the results are better understood in their magnitude order than directly comparing their numbers.</i></b></p>
-
 <table>
 <tr><th colspan="10" style="text-align: center;"><font size="+2">Experiment Results</font></th></tr>
 <tr>
@@ -390,8 +388,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<th>Test Env</th>
 	<th>Total Reward</th>
 	<th>Reset</th>
-	<th>Frame Count</th>
-	<th>Total time (\(\text{sec}\))</th>
 </tr>
 <tr>
 	<td>1</td>
@@ -400,10 +396,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box</td>
-	<td> \(934\)</td>
-	<td> \(68\)</td>
-	<td> \(194952\)</td>
-	<td> \(2003.5\)</td>
+	<td> \(1027\)</td>
+	<td> \(61\)</td>
 </tr>
 <tr>
 	<td>2</td>
@@ -412,10 +406,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box </td>
-	<td>\(2108\)</td>
-	<td> \(81\)</td>
-	<td> \(199741\)</td>
-	<td> \(2002.7\)</td>
+	<td>\(2324\)</td>
+	<td> \(82\)</td>
 </tr>
 <tr>
 	<td>3</td>
@@ -424,10 +416,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Sparse</td>
 	<td>1, box</td>
-	<td>\(2\)</td>
-	<td> \(594\)</td>
-	<td> \(199741\)</td>
-	<td> \(2002.7\)</td>
+	<td>\(4\)</td>
+	<td> \(670\)</td>
 </tr>
 <tr>
 	<td>4</td>
@@ -438,8 +428,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td>\(0\)</td>
 	<td> \(0\)</td>
-	<td> \(199693\)</td>
-	<td> \(2004.2\)</td>
 </tr>
 <tr>
 	<td>5</td>
@@ -448,10 +436,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box</td>
-	<td>\(1433\)</td>
-	<td> \(11\)</td>
-	<td> \(100888\)</td>
-	<td> \(2546.0\)</td>
+	<td>\(1370\)</td>
+	<td> \(7\)</td>
 </tr>
 <tr>
 	<td>6</td>
@@ -460,10 +446,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>1, box</td>
-	<td>\(2798\)</td>
+	<td>\(2883\)</td>
 	<td> \(0\)</td>
-	<td> \(191185\)</td>
-	<td> \(2005.2\)</td>
 </tr>
 <tr>
 	<td>7</td>
@@ -472,10 +456,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>24, boxes</td>
 	<td style="border-right: 1px solid;">Sparse</td>
 	<td>1, boxes</td>
-	<td>\(6\)</td>
+	<td>\(12\)</td>
 	<td> \(0\)</td>
-	<td> \(195579\)</td>
-	<td> \(2003.9\)</td>
 </tr>
 <tr>
 	<td>8</td>
@@ -484,8 +466,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>24, boxes</td>
 	<td style="border-right: 1px solid;">Sparse</td>
 	<td>24, boxes</td>
-	<td>\(6753\)</td>
-	<td> \(1\)</td>
+	<td>\(7119\)</td>
+	<td> \(3\)</td>
 	<td> \(181349\)</td>
 	<td> \(2010.1\)</td>
 </tr>
@@ -496,10 +478,8 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 	<td>1, box</td>
 	<td style="border-right: 1px solid;">Per action</td>
 	<td>24, boxes</td>
-	<td>\(5824\)</td>
+	<td>\(6163\)</td>
 	<td> \(0\)</td>
-	<td> \(189626\)</td>
-	<td> \(2003.9\)</td>
 </tr>
 </table>
 
@@ -555,8 +535,6 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 
 
 <h4>Discussion</h4>
-
-<p>Disclaimer: Given the odd behavior of the Unity engine simulation, and the difficult it brings to validate and reproduce the results all analysis should be taken with caution and not generalized.</p>
 
 TODO- videos + images
 
