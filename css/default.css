@@ -87,6 +87,38 @@ html {
     height: 100%;
 }
 
+.video-container2l {
+	float: left;
+	display: block;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 50%;
+	width: 50%;
+}
+.video-container2l iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-container2r {
+	float:right;
+	display: block;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 */
+    height: 50%;
+	width: 50%;
+}
+.video-container2r iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 #back2Top {
     cursor: pointer;
     -moz-transform: rotate(270deg);

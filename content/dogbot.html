@@ -15,13 +15,11 @@
 
 <h3>Motivation</h3>
 
-<p>While there are plenty of successful cases of low-level training</humam muscle ref>, developing such learning environments and characters demands a lot of additional work and fine tuning, yet the result may not be suitable for artistic purposes</example>. </p>
+<p>While there are plenty of successful cases of low-level training</humam muscle ref>, developing such learning environments and characters demands a lot of additional work and fine tuning, however the result may not be suitable for artistic purposes</example>. </p>
 
 <p>The mixed use of heuristic, machine learning and traditional animations simplifies both the learning process and the artistic control over the final result. It gathers the best of each world: the traditional animation and heuristic gives the artistic control over the set of actions whereas the machine learning gives the possibility of the agent generalizing for many situations.</p>
 
-<p>It differs from the other approaches using high level control such as the Atari</ref needed> games in its fundamental principle: it is not solving a existing game, but building its own game environment which gives the freedom of balancing between the learning difficult (generalization) and the control over the actions (static heuristic and animations).</p>
-
-<p>
+<p>With this plot, our approach differs from the others using high level control such as the Atari</ref needed> games in its fundamental principle: it is not solving a existing game, but building its own game environment which gives the freedom of balancing between the learning difficult (generalization) and the control over the actions (static heuristic and animations) and with full access to the underlying environment model.</p>
 
 <h3>Environment</h3>
 
@@ -522,10 +520,39 @@ In all cases, leaving the training area leads to a negative reward of \(-1.0\) e
 
 
 
+<div style="display:inline-block;margin: 5%;width:90%;">
+
+	<div class="video-container2l" style="text-align: center">
+	
+	<iframe width="460" height="300" src="https://www.youtube.com/embed/pGIeuzR1pSw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+	
+	<div class="video-container2r" style="text-align: center">
+	
+	<iframe width="460" height="300" src="https://www.youtube.com/embed/WkG_tqn4r64" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+	</div>
+	Test scene with multiple objects.</br>
+	(Left) Visual observation with continuous action space trained with multiple objects and sparse reward. (Right) Visual observation with continuous action space trained with a single object and per action reward.<br>
+</div>
+
+<div style="display:inline-block;margin: 5%;width:90%;">
+
+	<div class="video-container2l" style="text-align: center">
+	
+	<iframe width="460" height="300" src="https://www.youtube.com/embed/KUBKVprejXQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	</div>
+	
+	<div class="video-container2r" style="text-align: center">
+	
+	<iframe width="460" height="300" src="https://www.youtube.com/embed/mCS03VzBVUE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+	</div>
+	Test scene with one object.</br>
+	(Left) Visual observation with continuous action space trained with multiple objects and sparse reward. (Right) Visual observation with continuous action space trained with a single object and per action reward.<br>
+</div>
 
 <h4>Discussion</h4>
-
-TODO- videos + images
 
 <h5>Effect of various action branches at the same time</h5>
 
